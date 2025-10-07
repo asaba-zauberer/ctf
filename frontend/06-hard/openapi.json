@@ -1,0 +1,15 @@
+{
+  "openapi": "3.0.0",
+  "info": { "title": "Internal Fetcher", "version": "1.0.0" },
+  "paths": {
+    "/c/ecs-ssrf-fetcher/api/fetch": {
+      "get": {
+        "summary": "Fetch ECS task metadata credentials (whitelisted only)",
+        "parameters": [
+          { "name": "sessionId", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }
+        ]
+      }
+    }
+  }
+}

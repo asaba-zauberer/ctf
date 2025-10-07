@@ -1,0 +1,335 @@
+{
+  "meta": {
+    "name": "02-easy",
+    "version": "1.1",
+    "defaultOutput": "text",
+    "description": "Challenge 02."
+  },
+  "initialState": {
+    "region": "",
+    "env": {},
+    "identities": [
+      {
+        "id": "userA",
+        "accountId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:user/userA",
+        "userName": "userA",
+        "policies": [
+          "sqs:ListQueues",
+          "sqs:GetQueueAttributes",
+          "ec2:DescribeInstances",
+          "ec2:DescribeSecurityGroups",
+          "iam:GetUser",
+          "iam:ListGroupsForUser",
+          "iam:GetGroup",
+          "iam:ListAttachedGroupPolicies",
+          "iam:GetPolicy",
+          "iam:GetPolicyVersion"
+        ]
+      }
+    ],
+    "activeIdentity": "userA",
+    "custom": {
+      "accountId": "123456789012",
+      "region": "us-east-1",
+      "publicQueueName": "public-queue",
+      "privateQueueName": "private-queue",
+      "flag": "flag{sqs-public-policy-receive-123}"
+    }
+  },
+  "commands": [
+    {
+      "match": { "equals": "aws sts get-caller-identity" },
+      "response": {
+        "render": "json",
+        "json": {
+          "UserId": "AIDAEXAMPLE",
+          "Account": "123456789012",
+          "Arn": "arn:aws:iam::123456789012:user/userA"
+        }
+      }
+    },
+    {
+      "match": { "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$" },
+      "mutateState": [{ "op": "set", "path": "region", "value": "us-east-1" }],
+      "response": { "text": "" }
+    },
+    {
+      "match": { "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$" },
+      "mutateState": [
+        { "op": "set", "path": "env.AWS_DEFAULT_REGION", "value": "us-east-1" },
+        { "op": "set", "path": "region", "value": "us-east-1" }
+      ],
+      "response": { "text": "" }
+    },
+    {
+      "match": { "regex": "^aws\\s+iam\\s+get-user\\s*$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "User": {
+            "UserName": "userA",
+            "Arn": "arn:aws:iam::123456789012:user/userA",
+            "CreateDate": "2025-10-04T00:00:00+00:00"
+          }
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+list-groups-for-user\\s+--user-name\\s+userA\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "Groups": [
+            {
+              "GroupName": "queue-ops",
+              "Arn": "arn:aws:iam::123456789012:group/queue-ops",
+              "CreateDate": "2025-09-25T00:00:00+00:00"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "match": { "regex": "^aws\\s+iam\\s+get-group\\s+--group-name\\s+queue-ops\\s*$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "Group": {
+            "GroupName": "queue-ops",
+            "Arn": "arn:aws:iam::123456789012:group/queue-ops",
+            "CreateDate": "2025-09-25T00:00:00+00:00"
+          },
+          "Users": [
+            { "UserName": "userA", "Arn": "arn:aws:iam::123456789012:user/userA" }
+          ]
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+list-attached-group-policies\\s+--group-name\\s+queue-ops\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "AttachedPolicies": [
+            {
+              "PolicyName": "QueueReceivePublic",
+              "PolicyArn": "arn:aws:iam::123456789012:policy/QueueReceivePublic"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-policy\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/QueueReceivePublic\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "Policy": {
+            "PolicyName": "QueueReceivePublic",
+            "Arn": "arn:aws:iam::123456789012:policy/QueueReceivePublic",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 1,
+            "CreateDate": "2025-09-15T00:00:00+00:00",
+            "UpdateDate": "2025-09-15T00:00:00+00:00"
+          }
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/QueueReceivePublic\\s+--version-id\\s+v1\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "PolicyVersion": {
+            "VersionId": "v1",
+            "IsDefaultVersion": true,
+            "Document": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowReceivePublicQueue\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"sqs:ListQueues\", \"sqs:ReceiveMessage\"],\n      \"Resource\": \"arn:aws:sqs:us-east-1:123456789012:public-queue\"\n    }\n  ]\n}"
+          }
+        }
+      }
+    },
+    {
+      "match": { "regex": "^aws\\s+sqs\\s+list-queues\\s*$" },
+      "requires": { "regionSet": true, "hasPoliciesAny": ["sqs:ListQueues"] },
+      "response": {
+        "render": "json",
+        "json": {
+          "QueueUrls": [
+            "https://sqs.us-east-1.123456789012.amazonaws.com/123456789012/public-queue",
+            "https://sqs.us-east-1.123456789012.amazonaws.com/123456789012/private-queue"
+          ]
+        }
+      },
+      "errorOnFail": {
+        "errorCode": "UnknownOperation",
+        "message": "You must specify a region. You can also configure your region by running 'aws configure'.",
+        "exitCode": 255
+      }
+    },
+    {
+      "match": { "regex": "^aws\\s+sqs\\s+get-queue-attributes\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/public-queue\\s+--attribute-names\\s+All\\s*$" },
+      "requires": { "regionSet": true, "hasPoliciesAny": ["sqs:GetQueueAttributes"] },
+      "response": {
+        "render": "json",
+        "json": {
+          "Attributes": {
+            "QueueArn": "arn:aws:sqs:us-east-1:123456789012:public-queue",
+            "ApproximateNumberOfMessages": "1",
+            "VisibilityTimeout": "30",
+            "Policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"PublicReceive\",\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Action\": [\"sqs:ReceiveMessage\"],\n      \"Resource\": \"arn:aws:sqs:us-east-1:123456789012:public-queue\"\n    }\n  ]\n}"
+          }
+        }
+      }
+    },
+    {
+      "match": { "regex": "^aws\\s+sqs\\s+get-queue-attributes\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/private-queue\\s+--attribute-names\\s+All\\s*$" },
+      "requires": { "regionSet": true, "hasPoliciesAny": ["sqs:GetQueueAttributes"] },
+      "response": {
+        "render": "json",
+        "json": {
+          "Attributes": {
+            "QueueArn": "arn:aws:sqs:us-east-1:123456789012:private-queue",
+            "ApproximateNumberOfMessages": "1",
+            "VisibilityTimeout": "30",
+            "Policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"StrictOnlyAccount\",\n      \"Effect\": \"Allow\",\n      \"Principal\": {\"AWS\": \"arn:aws:iam::123456789012:root\"},\n      \"Action\": [\"sqs:ReceiveMessage\"],\n      \"Resource\": \"arn:aws:sqs:us-east-1:123456789012:private-queue\"\n    }\n  ]\n}"
+          }
+        }
+      }
+    },
+    {
+      "match": { "regex": "^aws\\s+sqs\\s+receive-message\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/public-queue\\s*$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "Messages": [
+            {
+              "MessageId": "11111111-2222-3333-4444-555555555555",
+              "ReceiptHandle": "AQEBEXAMPLEhandle==",
+              "MD5OfBody": "3f5d8c6f9b3d2a0e7a4c6f2c1d9e1234",
+              "Body": "flag{sqs-public-policy-receive-123}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "match": { "regex": "^aws\\s+sqs\\s+receive-message\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/private-queue\\s*$" },
+      "requires": { "regionSet": true },
+      "response": { "text": "" },
+      "errorOnFail": {
+        "errorCode": "AccessDenied",
+        "message": "An error occurred (AccessDenied) when calling the ReceiveMessage operation: Access Denied",
+        "exitCode": 255
+      }
+    },
+    {
+      "match": { "regex": "^aws\\s+ec2\\s+describe-instances\\s*$" },
+      "requires": {
+        "regionSet": true,
+        "hasPoliciesAny": ["ec2:DescribeInstances"]
+      },
+      "response": {
+        "render": "json",
+        "json": {
+          "Reservations": [
+            {
+              "ReservationId": "r-0queueopsdemo",
+              "OwnerId": "123456789012",
+              "Instances": [
+                {
+                  "InstanceId": "i-0queueworkers12345",
+                  "InstanceType": "t3.small",
+                  "AvailabilityZone": "us-east-1a",
+                  "State": { "Name": "running" },
+                  "PrivateIpAddress": "10.0.12.45",
+                  "Tags": [
+                    { "Key": "Name", "Value": "queue-workers" },
+                    { "Key": "Service", "Value": "sqs-demo" }
+                  ],
+                  "SecurityGroups": [
+                    {
+                      "GroupName": "queue-workers-sg",
+                      "GroupId": "sg-0queue12345"
+                    }
+                  ],
+                  "NetworkInterfaces": [
+                    {
+                      "NetworkInterfaceId": "eni-0123456789abcdef0",
+                      "PrivateIpAddress": "10.0.12.45"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+ec2\\s+describe-security-groups\\s+--group-ids\\s+sg-0queue12345\\s*$"
+      },
+      "requires": {
+        "regionSet": true,
+        "hasPoliciesAny": ["ec2:DescribeSecurityGroups"]
+      },
+      "response": {
+        "render": "json",
+        "json": {
+          "SecurityGroups": [
+            {
+              "GroupId": "sg-0queue12345",
+              "GroupName": "queue-workers-sg",
+              "Description": "Allow SQS pollers outbound",
+              "VpcId": "vpc-0abc123queue",
+              "IpPermissions": [
+                {
+                  "IpProtocol": "-1",
+                  "IpRanges": [
+                    {
+                      "CidrIp": "0.0.0.0/0",
+                      "Description": "Outbound internet for polling"
+                    }
+                  ]
+                }
+              ],
+              "IpPermissionsEgress": [
+                {
+                  "IpProtocol": "-1",
+                  "IpRanges": [
+                    {
+                      "CidrIp": "0.0.0.0/0",
+                      "Description": "Allow responses"
+                    }
+                  ]
+                }
+              ],
+              "Tags": [{ "Key": "Team", "Value": "QueueOps" }]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "fallbackError": {
+    "errorCode": "UnknownOperation",
+    "message": "An error occurred. See 'aws --help'.",
+    "exitCode": 255
+  }
+}

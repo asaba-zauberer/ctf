@@ -1,0 +1,323 @@
+{
+  "meta": {
+    "name": "03-medium",
+    "version": "1.1",
+    "defaultOutput": "text",
+    "description": "Challenge 03."
+  },
+  "initialState": {
+    "region": "",
+    "env": {},
+    "identities": [
+      {
+        "id": "userA",
+        "accountId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:user/userA",
+        "userName": "userA",
+        "policies": [
+          "rds:DescribeDBSnapshots",
+          "rds:ListTagsForResource",
+          "rds:DescribeDBSnapshotAttributes",
+          "ec2:DescribeSecurityGroups",
+          "iam:GetUser",
+          "iam:ListUserPolicies",
+          "iam:GetUserPolicy"
+        ]
+      }
+    ],
+    "activeIdentity": "userA",
+    "custom": {
+      "accountId": "123456789012",
+      "region": "us-east-1",
+      "publicSnapshotId": "ctf-public-snap",
+      "publicSnapshotArn": "arn:aws:rds:us-east-1:123456789012:snapshot:ctf-public-snap",
+      "decoySnapshotId": "marketing-backup-2025-10-01",
+      "auditSecurityGroupId": "sg-0a1b2c3d4e5f67890",
+      "auditSecurityGroupName": "shared-snapshot-inspection",
+      "flag": "flag{rds-public-snapshot-123}"
+    }
+  },
+  "commands": [
+    {
+      "match": { "equals": "aws sts get-caller-identity" },
+      "response": {
+        "render": "json",
+        "json": {
+          "UserId": "AIDAEXAMPLE",
+          "Account": "123456789012",
+          "Arn": "arn:aws:iam::123456789012:user/userA"
+        }
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$" },
+      "mutateState": [{ "op": "set", "path": "region", "value": "us-east-1" }],
+      "response": { "text": "" }
+    },
+    {
+      "match": { "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$" },
+      "mutateState": [
+        { "op": "set", "path": "env.AWS_DEFAULT_REGION", "value": "us-east-1" },
+        { "op": "set", "path": "region", "value": "us-east-1" }
+      ],
+      "response": { "text": "" }
+    },
+    {
+      "match": { "regex": "^aws\\s+iam\\s+get-user\\s*$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "User": {
+            "UserName": "userA",
+            "Arn": "arn:aws:iam::123456789012:user/userA",
+            "CreateDate": "2025-10-04T00:00:00+00:00"
+          }
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+list-user-policies\\s+--user-name\\s+userA\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "PolicyNames": ["RDSPublicSnapshotAudit"]
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-user-policy\\s+--user-name\\s+userA\\s+--policy-name\\s+RDSPublicSnapshotAudit\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "Policy": {
+            "UserName": "userA",
+            "PolicyName": "RDSPublicSnapshotAudit",
+            "PolicyDocument": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"InspectSharedSnapshots\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"rds:DescribeDBSnapshots\", \"rds:ListTagsForResource\"],\n      \"Resource\": \"*\"\n    }\n  ]\n}"
+          }
+        }
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+rds\\s+describe-db-snapshots\\s+--include-public\\s*$" },
+      "requires": { "regionSet": true, "hasPoliciesAny": ["rds:DescribeDBSnapshots"] },
+      "response": {
+        "render": "json",
+        "json": {
+          "DBSnapshots": [
+            {
+              "DBSnapshotIdentifier": "{{custom.publicSnapshotId}}",
+              "DBInstanceIdentifier": "prod-app-db",
+              "SnapshotCreateTime": "2025-10-01T00:00:00+00:00",
+              "Engine": "mysql",
+              "AllocatedStorage": 20,
+              "Status": "available",
+              "Port": 3306,
+              "AvailabilityZone": "us-east-1a",
+              "VpcId": "vpc-0123456789abcdef0",
+              "Encrypted": false,
+              "StorageType": "gp2",
+              "IAMDatabaseAuthenticationEnabled": false,
+              "DBSnapshotArn": "{{custom.publicSnapshotArn}}",
+              "SourceRegion": "us-east-1",
+              "PercentProgress": 100,
+              "SnapshotType": "public"
+            },
+            {
+              "DBSnapshotIdentifier": "{{custom.decoySnapshotId}}",
+              "DBInstanceIdentifier": "reporting-db",
+              "SnapshotCreateTime": "2025-10-02T00:00:00+00:00",
+              "Engine": "postgres",
+              "AllocatedStorage": 10,
+              "Status": "available",
+              "Port": 5432,
+              "AvailabilityZone": "us-east-1b",
+              "VpcId": "vpc-0fedcba9876543210",
+              "Encrypted": true,
+              "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+              "StorageType": "gp3",
+              "IAMDatabaseAuthenticationEnabled": false,
+              "DBSnapshotArn": "arn:aws:rds:us-east-1:123456789012:snapshot:marketing-backup-2025-10-01",
+              "SourceRegion": "us-east-1",
+              "PercentProgress": 100,
+              "SnapshotType": "manual"
+            }
+          ]
+        }
+      },
+      "errorOnFail": {
+        "errorCode": "UnknownOperation",
+        "message": "You must specify a region. You can also configure your region by running 'aws configure'.",
+        "exitCode": 255
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+rds\\s+describe-db-snapshots\\s+--db-snapshot-identifier\\s+ctf-public-snap\\s*$" },
+      "requires": { "regionSet": true, "hasPoliciesAny": ["rds:DescribeDBSnapshots"] },
+      "response": {
+        "render": "json",
+        "json": {
+          "DBSnapshots": [
+            {
+              "DBSnapshotIdentifier": "{{custom.publicSnapshotId}}",
+              "DBInstanceIdentifier": "prod-app-db",
+              "SnapshotCreateTime": "2025-10-01T00:00:00+00:00",
+              "Engine": "mysql",
+              "AllocatedStorage": 20,
+              "Status": "available",
+              "Port": 3306,
+              "AvailabilityZone": "us-east-1a",
+              "VpcId": "vpc-0123456789abcdef0",
+              "Encrypted": false,
+              "StorageType": "gp2",
+              "IAMDatabaseAuthenticationEnabled": false,
+              "DBSnapshotArn": "{{custom.publicSnapshotArn}}",
+              "SourceRegion": "us-east-1",
+              "PercentProgress": 100,
+              "SnapshotType": "public"
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+rds\\s+list-tags-for-resource\\s+--resource-name\\s+arn:aws:rds:us-east-1:[0-9]{12}:snapshot:ctf-public-snap\\s*$" },
+      "requires": { "regionSet": true, "hasPoliciesAny": ["rds:ListTagsForResource"] },
+      "response": {
+        "render": "json",
+        "json": {
+          "TagList": [
+            { "Key": "Name", "Value": "public-training-snapshot" },
+            { "Key": "Environment", "Value": "demo" },
+            { "Key": "flag", "Value": "flag{rds-public-snapshot-123}" }
+          ]
+        }
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+rds\\s+list-tags-for-resource\\s+--resource-name\\s+arn:aws:rds:us-east-1:[0-9]{12}:snapshot:marketing-backup-2025-10-01\\s*$" },
+      "requires": { "regionSet": true, "hasPoliciesAny": ["rds:ListTagsForResource"] },
+      "response": {
+        "render": "json",
+        "json": {
+          "TagList": [
+            { "Key": "Project", "Value": "marketing" },
+            { "Key": "CostCenter", "Value": "1234" }
+          ]
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+rds\\s+describe-db-snapshot-attributes\\s+--db-snapshot-identifier\\s+ctf-public-snap\\s*$"
+      },
+      "requires": {
+        "regionSet": true,
+        "hasPoliciesAny": ["rds:DescribeDBSnapshotAttributes"]
+      },
+      "response": {
+        "render": "json",
+        "json": {
+          "DBSnapshotAttributesResult": {
+            "DBSnapshotIdentifier": "{{custom.publicSnapshotId}}",
+            "DBSnapshotAttributes": [
+              {
+                "AttributeName": "restore",
+                "AttributeValues": ["all"]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+rds\\s+describe-db-snapshot-attributes\\s+--db-snapshot-identifier\\s+marketing-backup-2025-10-01\\s*$"
+      },
+      "requires": {
+        "regionSet": true,
+        "hasPoliciesAny": ["rds:DescribeDBSnapshotAttributes"]
+      },
+      "response": {
+        "render": "json",
+        "json": {
+          "DBSnapshotAttributesResult": {
+            "DBSnapshotIdentifier": "{{custom.decoySnapshotId}}",
+            "DBSnapshotAttributes": [
+              {
+                "AttributeName": "restore",
+                "AttributeValues": ["123456789012"]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+ec2\\s+describe-security-groups\\s+--group-ids\\s+sg-0a1b2c3d4e5f67890\\s*$"
+      },
+      "requires": {
+        "regionSet": true,
+        "hasPoliciesAny": ["ec2:DescribeSecurityGroups"]
+      },
+      "response": {
+        "render": "json",
+        "json": {
+          "SecurityGroups": [
+            {
+              "GroupId": "{{custom.auditSecurityGroupId}}",
+              "GroupName": "{{custom.auditSecurityGroupName}}",
+              "Description": "Shared read access for audit snapshots",
+              "VpcId": "vpc-0123456789abcdef0",
+              "IpPermissions": [
+                {
+                  "IpProtocol": "tcp",
+                  "FromPort": 3306,
+                  "ToPort": 3306,
+                  "UserIdGroupPairs": [
+                    {
+                      "GroupId": "sg-0dbadmins123456789",
+                      "GroupName": "db-admins"
+                    }
+                  ]
+                }
+              ],
+              "IpPermissionsEgress": [
+                {
+                  "IpProtocol": "-1",
+                  "IpRanges": [
+                    {
+                      "CidrIp": "0.0.0.0/0",
+                      "Description": "Audit tooling access"
+                    }
+                  ]
+                }
+              ],
+              "Tags": [
+                { "Key": "Environment", "Value": "demo" },
+                { "Key": "Purpose", "Value": "snapshot-audit" }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "fallbackError": {
+    "errorCode": "UnknownOperation",
+    "message": "An error occurred. See 'aws --help'.",
+    "exitCode": 255
+  }
+}

@@ -1,0 +1,288 @@
+{
+  "meta": {
+    "name": "06-hard",
+    "version": "1.1",
+    "defaultOutput": "text",
+    "description": "Challenge 06."
+  },
+  "initialState": {
+    "region": "",
+    "env": {},
+    "identities": [
+      {
+        "id": "userA",
+        "accountId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:user/userA",
+        "userName": "userA",
+        "policies": [
+          "ssm:DescribeParameters",
+          "ecs:ListClusters",
+          "ecs:ListTasks",
+          "ecs:DescribeTasks",
+          "iam:GetRole",
+          "iam:ListRolePolicies",
+          "iam:GetRolePolicy"
+        ]
+      },
+      {
+        "id": "taskRole",
+        "accountId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:role/ecsTaskRole",
+        "userName": "ecsTaskRole",
+        "policies": [
+          "ssm:DescribeParameters",
+          "ssm:GetParameter"
+        ]
+      }
+    ],
+    "activeIdentity": "userA",
+    "custom": {
+      "flag": "flag{ecs-metadata-to-ssm-123}",
+      "paramName": "/prod/app/flag",
+      "clusterName": "prod-frontend",
+      "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/prod-frontend/0f1e2d3c4b5a69788776655443322110",
+      "taskDefinition": "arn:aws:ecs:us-east-1:123456789012:task-definition/prod-frontend:42"
+    }
+  },
+  "commands": [
+    {
+      "match": { "equals": "aws sts get-caller-identity" },
+      "response": {
+        "render": "json",
+        "json": {
+          "UserId": "AIDAEXAMPLE",
+          "Account": "123456789012",
+          "Arn": "arn:aws:iam::123456789012:user/userA"
+        }
+      }
+    },
+    {
+      "match": { "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$" },
+      "mutateState": [
+        { "op": "set", "path": "region", "value": "us-east-1" }
+      ],
+      "response": { "text": "" }
+    },
+    {
+      "match": {
+        "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$"
+      },
+      "mutateState": [
+        {
+          "op": "set",
+          "path": "env.AWS_DEFAULT_REGION",
+          "value": "us-east-1"
+        },
+        { "op": "set", "path": "region", "value": "us-east-1" }
+      ],
+      "response": { "text": "" }
+    },
+    {
+      "match": { "regex": "^aws\\s+iam\\s+get-role\\s+--role-name\\s+ecsTaskRole\\s*$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "Role": {
+            "RoleName": "ecsTaskRole",
+            "Arn": "arn:aws:iam::123456789012:role/ecsTaskRole",
+            "CreateDate": "2025-10-04T00:00:00+00:00"
+          }
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+list-role-policies\\s+--role-name\\s+ecsTaskRole\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "PolicyNames": ["TaskDiagnosticsAccess"]
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-role-policy\\s+--role-name\\s+ecsTaskRole\\s+--policy-name\\s+TaskDiagnosticsAccess\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "Policy": {
+            "RoleName": "ecsTaskRole",
+            "PolicyName": "TaskDiagnosticsAccess",
+            "PolicyDocument": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowDiagnosticsParameters\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"ssm:DescribeParameters\", \"ssm:GetParameter\"],\n      \"Resource\": \"*\"\n    }\n  ]\n}"
+          }
+        }
+      }
+    },
+    {
+      "match": { "regex": "^aws ecs list-clusters$" },
+      "requires": {
+        "regionSet": true,
+        "hasPoliciesAny": ["ecs:ListClusters"]
+      },
+      "response": {
+        "render": "json",
+        "json": {
+          "clusterArns": [
+            "arn:aws:ecs:us-east-1:123456789012:cluster/{{custom.clusterName}}",
+            "arn:aws:ecs:us-east-1:123456789012:cluster/training-sandbox"
+          ]
+        }
+      },
+      "errorOnFail": {
+        "errorCode": "AccessDenied",
+        "message": "An error occurred (AccessDeniedException) when calling the ListClusters operation: User is not authorized to perform ecs:ListClusters",
+        "exitCode": 255
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws ecs list-tasks --cluster prod-frontend --desired-status RUNNING$"
+      },
+      "requires": {
+        "regionSet": true,
+        "hasPoliciesAny": ["ecs:ListTasks"]
+      },
+      "response": {
+        "render": "json",
+        "json": {
+          "taskArns": ["{{custom.taskArn}}"]
+        }
+      },
+      "errorOnFail": {
+        "errorCode": "AccessDenied",
+        "message": "An error occurred (AccessDeniedException) when calling the ListTasks operation: User is not authorized to perform ecs:ListTasks",
+        "exitCode": 255
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws ecs describe-tasks --cluster prod-frontend --tasks arn:aws:ecs:us-east-1:[0-9]{12}:task/prod-frontend/[A-Za-z0-9-]+$"
+      },
+      "requires": {
+        "regionSet": true,
+        "hasPoliciesAny": ["ecs:DescribeTasks"]
+      },
+      "response": {
+        "render": "json",
+        "json": {
+          "tasks": [
+            {
+              "taskArn": "{{custom.taskArn}}",
+              "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/{{custom.clusterName}}",
+              "taskDefinitionArn": "{{custom.taskDefinition}}",
+              "lastStatus": "RUNNING",
+              "desiredStatus": "RUNNING",
+              "launchType": "FARGATE",
+              "cpu": "256",
+              "memory": "512",
+              "startedBy": "ecs-svc/1234567890123456789",
+              "tags": [
+                { "key": "Service", "value": "frontend" },
+                { "key": "Environment", "value": "production" }
+              ],
+              "attachments": [
+                {
+                  "type": "ElasticNetworkInterface",
+                  "id": "eni-0abcde123456789f0",
+                  "status": "ATTACHED",
+                  "details": [
+                    { "name": "subnetId", "value": "subnet-0a1b2c3d4e" },
+                    { "name": "networkInterfaceId", "value": "eni-0abcde123456789f0" },
+                    { "name": "privateIPv4Address", "value": "10.0.13.24" }
+                  ]
+                }
+              ],
+              "containers": [
+                {
+                  "name": "frontend",
+                  "image": "123456789012.dkr.ecr.us-east-1.amazonaws.com/frontend:2025-10-03",
+                  "runtimeId": "0f1e2d3c4b5a69788776655443322110-1234567890",
+                  "lastStatus": "RUNNING",
+                  "networkInterfaces": [
+                    {
+                      "privateIpv4Address": "10.0.13.24"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "errorOnFail": {
+        "errorCode": "AccessDenied",
+        "message": "An error occurred (AccessDeniedException) when calling the DescribeTasks operation: User is not authorized to perform ecs:DescribeTasks",
+        "exitCode": 255
+      }
+    },
+    {
+      "match": { "regex": "^aws\\s+ssm\\s+describe-parameters\\s*$" },
+      "requires": {
+        "regionSet": true,
+        "hasPoliciesAny": ["ssm:DescribeParameters"]
+      },
+      "response": {
+        "render": "json",
+        "json": {
+          "Parameters": [
+            {
+              "Name": "/prod/app/flag",
+              "Type": "SecureString",
+              "Version": 3,
+              "LastModifiedDate": "2025-10-04T00:00:00+00:00"
+            },
+            {
+              "Name": "/prod/app/flag-old",
+              "Type": "SecureString",
+              "Version": 1,
+              "LastModifiedDate": "2025-09-20T00:00:00+00:00"
+            }
+          ]
+        }
+      },
+      "errorOnFail": {
+        "errorCode": "UnknownOperation",
+        "message": "You must specify a region. You can also configure your region by running 'aws configure'.",
+        "exitCode": 255
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+ssm\\s+get-parameter\\s+--name\\s+(.+?)\\s+--with-decryption\\s*$"
+      },
+      "requires": {
+        "regionSet": true,
+        "hasPoliciesAny": ["ssm:GetParameter"],
+        "activeIdentity": "taskRole"
+      },
+      "response": {
+        "render": "json",
+        "json": {
+          "Parameter": {
+            "Name": "/prod/app/flag",
+            "Type": "SecureString",
+            "Value": "flag{ecs-metadata-to-ssm-123}",
+            "Version": 3,
+            "LastModifiedDate": "2025-10-04T00:00:00+00:00"
+          }
+        }
+      },
+      "errorOnFail": {
+        "errorCode": "AccessDenied",
+        "message": "An error occurred (AccessDeniedException) when calling the GetParameter operation: User is not authorized to perform: ssm:GetParameter on resource",
+        "exitCode": 255
+      }
+    }
+  ],
+  "fallbackError": {
+    "errorCode": "UnknownOperation",
+    "message": "An error occurred. See 'aws --help'.",
+    "exitCode": 255
+  }
+}

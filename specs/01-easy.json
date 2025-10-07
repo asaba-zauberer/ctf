@@ -1,0 +1,237 @@
+{
+  "meta": {
+    "name": "01-easy",
+    "version": "1.1",
+    "defaultOutput": "text",
+    "description": "Challenge 01."
+  },
+  "initialState": {
+    "region": "",
+    "env": {},
+    "identities": [
+      {
+        "id": "userA",
+        "accountId": "123456789012",
+        "arn": "arn:aws:iam::123456789012:user/userA",
+        "policies": [
+          "s3:ListAllMyBuckets",
+          "s3:ListBucket",
+          "s3:GetObject",
+          "iam:GetUser",
+          "iam:ListAttachedUserPolicies",
+          "iam:GetPolicy",
+          "iam:ListPolicyVersions",
+          "iam:GetPolicyVersion"
+        ]
+      }
+    ],
+    "activeIdentity": "userA",
+    "custom": {
+      "bucket": "ctf-public-bucket",
+      "backupBucket": "ctf-public-backup",
+      "flagKey": "flag.txt",
+      "flag": "flag{dummy-flag-123}",
+      "readme": "Tip: Use '-' to stream to stdout (e.g., aws s3 cp s3://BUCKET/flag.txt -)"
+    }
+  },
+  "commands": [
+    {
+      "match": { "equals": "aws sts get-caller-identity" },
+      "response": {
+        "render": "json",
+        "json": {
+          "UserId": "AIDAEXAMPLE",
+          "Account": "123456789012",
+          "Arn": "arn:aws:iam::123456789012:user/userA"
+        }
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$" },
+      "mutateState": [{ "op": "set", "path": "region", "value": "us-east-1" }],
+      "response": { "text": "" }
+    },
+    {
+      "match": { "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$" },
+      "mutateState": [
+        { "op": "set", "path": "env.AWS_DEFAULT_REGION", "value": "us-east-1" },
+        { "op": "set", "path": "region", "value": "us-east-1" }
+      ],
+      "response": { "text": "" }
+    },
+    {
+      "match": { "regex": "^aws\\s+iam\\s+get-user\\s*$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "User": {
+            "UserName": "userA",
+            "Arn": "arn:aws:iam::123456789012:user/userA",
+            "CreateDate": "2025-10-04T00:00:00+00:00"
+          }
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+list-attached-user-policies\\s+--user-name\\s+userA\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "AttachedPolicies": [
+            {
+              "PolicyName": "S3PublicAccessHint",
+              "PolicyArn": "arn:aws:iam::123456789012:policy/S3PublicAccessHint"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-policy\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/S3PublicAccessHint\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "Policy": {
+            "PolicyName": "S3PublicAccessHint",
+            "Arn": "arn:aws:iam::123456789012:policy/S3PublicAccessHint",
+            "DefaultVersionId": "v1",
+            "AttachmentCount": 1,
+            "CreateDate": "2025-09-28T00:00:00+00:00",
+            "UpdateDate": "2025-09-28T00:00:00+00:00"
+          }
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+list-policy-versions\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/S3PublicAccessHint\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "Versions": [
+            {
+              "VersionId": "v1",
+              "IsDefaultVersion": true,
+              "CreateDate": "2025-09-28T00:00:00+00:00"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/S3PublicAccessHint\\s+--version-id\\s+v1\\s*$"
+      },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "PolicyVersion": {
+            "VersionId": "v1",
+            "IsDefaultVersion": true,
+            "Document": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowPublicBucketRead\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"s3:ListBucket\", \"s3:GetObject\"],\n      \"Resource\": [\"arn:aws:s3:::ctf-public-bucket\", \"arn:aws:s3:::ctf-public-bucket/*\"]\n    }\n  ]\n}"
+          }
+        }
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+s3\\s+ls\\s*$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "text": "2025-10-04 00:00:00 ctf-public-bucket\n2025-10-04 00:00:00 ctf-public-backup\n"
+      },
+      "errorOnFail": {
+        "errorCode": "UnknownOperation",
+        "message": "You must specify a region. You can also configure your region by running 'aws configure'.",
+        "exitCode": 255
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-bucket/?$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "text": "                           PRE assets/\n2025-10-04 00:00:00          87 readme.txt\n2025-10-04 00:00:00          12 flag.txt\n2025-10-04 00:00:00          64 flag.txt.gpg\n"
+      }
+    },
+    {
+      "match": { "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-bucket/assets/?$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "text": "2025-10-04 00:00:00         124 manual.pdf\n2025-10-04 00:00:00          42 notes.txt\n2025-10-04 00:00:00          33 checklist.md\n"
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-backup/?$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "text": "2025-10-04 00:00:00          98 decoy-flag.txt\n"
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/readme.txt\\s+-\\s*$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "text": "Tip: Use '-' to stream to stdout (e.g., aws s3 cp s3://ctf-public-bucket/flag.txt -)\n"
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+s3api\\s+head-object\\s+--bucket\\s+ctf-public-bucket\\s+--key\\s+flag.txt\\s*$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "render": "json",
+        "json": {
+          "AcceptRanges": "bytes",
+          "LastModified": "2025-10-04T00:00:00+00:00",
+          "ContentLength": 19,
+          "ETag": "\"3f5d8c6f9b3d2a0e7a4c6f2c1d9e1234\"",
+          "ContentType": "text/plain",
+          "Metadata": { "hint": "use-stdout" }
+        }
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/flag.txt\\s+-\\s*$" },
+      "requires": { "regionSet": true },
+      "response": { "text": "flag{dummy-flag-123}\n" }
+    },
+    {
+      "match": { "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/flag.txt\\s*$" },
+      "requires": { "regionSet": true },
+      "response": {
+        "text": "usage: aws s3 cp <S3Uri> <LocalPath|-> [--recursive] [--exclude] [--include] [...]\n"
+      },
+      "errorOnFail": {
+        "errorCode": "UnknownOperation",
+        "message": "missing required argument: destination",
+        "exitCode": 255
+      }
+    },
+
+    {
+      "match": { "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-backup/decoy-flag.txt\\s+-\\s*$" },
+      "requires": { "regionSet": true },
+      "response": { "text": "not_a_flag{nice-try}\n" }
+    }
+  ],
+  "fallbackError": {
+    "errorCode": "UnknownOperation",
+    "message": "An error occurred. See 'aws --help'.",
+    "exitCode": 255
+  }
+}

@@ -1,0 +1,7 @@
+<!doctype html><meta charset="utf-8">
+<h1>Internal Fetcher (Whitelisted)</h1>
+<p>This diagnostic fetcher only supports ECS task metadata credentials endpoints.</p>
+<p>Usage:</p>
+<pre>GET /c/ecs-ssrf-fetcher/api/fetch?sessionId=&lt;SID&gt;&amp;url=http://169.254.170.2/v2/credentials/&lt;uuid&gt;</pre>
+<p>Other internal/external URLs are blocked by design.</p>
+<p class="note">In production, this endpoint should be disabled or require mTLS and strict audit logging.</p>
