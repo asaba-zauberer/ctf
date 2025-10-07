@@ -10,10 +10,10 @@
     "env": {},
     "identities": [
       {
-        "id": "userA",
-        "accountId": "123456789012",
-        "arn": "arn:aws:iam::123456789012:user/userA",
-        "userName": "userA",
+        "id": "dataops.mika.shirai",
+        "accountId": "444444444444",
+        "arn": "arn:aws:iam::444444444444:user/dataops.mika.shirai",
+        "userName": "dataops.mika.shirai",
         "policies": [
           "rds:DescribeDBSnapshots",
           "rds:ListTagsForResource",
@@ -25,15 +25,15 @@
         ]
       }
     ],
-    "activeIdentity": "userA",
+    "activeIdentity": "dataops.mika.shirai",
     "custom": {
-      "accountId": "123456789012",
+      "accountId": "444444444444",
       "region": "us-east-1",
-      "publicSnapshotId": "ctf-public-snap",
-      "publicSnapshotArn": "arn:aws:rds:us-east-1:123456789012:snapshot:ctf-public-snap",
-      "decoySnapshotId": "marketing-backup-2025-10-01",
-      "auditSecurityGroupId": "sg-0a1b2c3d4e5f67890",
-      "auditSecurityGroupName": "shared-snapshot-inspection",
+      "publicSnapshotId": "rdsnap-appdb-20251001",
+      "publicSnapshotArn": "arn:aws:rds:us-east-1:444444444444:snapshot:rdsnap-appdb-20251001",
+      "decoySnapshotId": "rdsnap-marketing-20250920",
+      "auditSecurityGroupId": "sg-0rdsnap123abc",
+      "auditSecurityGroupName": "rdsnap-audit-sg",
       "flag": "flag{rds-public-snapshot-123}"
     }
   },
@@ -45,9 +45,9 @@
       "response": {
         "render": "json",
         "json": {
-          "UserId": "AIDAEXAMPLE",
-          "Account": "123456789012",
-          "Arn": "arn:aws:iam::123456789012:user/userA"
+          "UserId": "AIDACTFRDSNAP01",
+          "Account": "444444444444",
+          "Arn": "arn:aws:iam::444444444444:user/dataops.mika.shirai"
         }
       }
     },
@@ -94,8 +94,8 @@
         "render": "json",
         "json": {
           "User": {
-            "UserName": "userA",
-            "Arn": "arn:aws:iam::123456789012:user/userA",
+            "UserName": "dataops.mika.shirai",
+            "Arn": "arn:aws:iam::444444444444:user/dataops.mika.shirai",
             "CreateDate": "2025-10-04T00:00:00+00:00"
           }
         }
@@ -103,27 +103,27 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+list-user-policies\\s+--user-name\\s+userA\\s*$"
+        "regex": "^aws\\s+iam\\s+list-user-policies\\s+--user-name\\s+dataops\\\\.mika\\\\.shirai\\s*$"
       },
       "response": {
         "render": "json",
         "json": {
           "PolicyNames": [
-            "RDSPublicSnapshotAudit"
+            "rdsnap-inspect-public"
           ]
         }
       }
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+get-user-policy\\s+--user-name\\s+userA\\s+--policy-name\\s+RDSPublicSnapshotAudit\\s*$"
+        "regex": "^aws\\s+iam\\s+get-user-policy\\s+--user-name\\s+dataops\\\\.mika\\\\.shirai\\s+--policy-name\\s+rdsnap-inspect-public\\s*$"
       },
       "response": {
         "render": "json",
         "json": {
           "Policy": {
-            "UserName": "userA",
-            "PolicyName": "RDSPublicSnapshotAudit",
+            "UserName": "dataops.mika.shirai",
+            "PolicyName": "rdsnap-inspect-public",
             "PolicyDocument": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"InspectSharedSnapshots\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"rds:DescribeDBSnapshots\", \"rds:ListTagsForResource\"],\n      \"Resource\": \"*\"\n    }\n  ]\n}"
           }
         }
@@ -143,7 +143,7 @@
         "json": {
           "DBSnapshots": [
             {
-              "DBSnapshotIdentifier": "{{custom.publicSnapshotId}}",
+              "DBSnapshotIdentifier": "rdsnap-appdb-20251001",
               "DBInstanceIdentifier": "prod-app-db",
               "SnapshotCreateTime": "2025-10-01T00:00:00+00:00",
               "Engine": "mysql",
@@ -155,13 +155,13 @@
               "Encrypted": false,
               "StorageType": "gp2",
               "IAMDatabaseAuthenticationEnabled": false,
-              "DBSnapshotArn": "{{custom.publicSnapshotArn}}",
+              "DBSnapshotArn": "arn:aws:rds:us-east-1:444444444444:snapshot:rdsnap-appdb-20251001",
               "SourceRegion": "us-east-1",
               "PercentProgress": 100,
               "SnapshotType": "public"
             },
             {
-              "DBSnapshotIdentifier": "{{custom.decoySnapshotId}}",
+              "DBSnapshotIdentifier": "rdsnap-marketing-20250920",
               "DBInstanceIdentifier": "reporting-db",
               "SnapshotCreateTime": "2025-10-02T00:00:00+00:00",
               "Engine": "postgres",
@@ -171,10 +171,10 @@
               "AvailabilityZone": "us-east-1b",
               "VpcId": "vpc-0fedcba9876543210",
               "Encrypted": true,
-              "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+              "KmsKeyId": "arn:aws:kms:us-east-1:444444444444:key/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
               "StorageType": "gp3",
               "IAMDatabaseAuthenticationEnabled": false,
-              "DBSnapshotArn": "arn:aws:rds:us-east-1:123456789012:snapshot:marketing-backup-2025-10-01",
+              "DBSnapshotArn": "arn:aws:rds:us-east-1:444444444444:snapshot:rdsnap-marketing-20250920",
               "SourceRegion": "us-east-1",
               "PercentProgress": 100,
               "SnapshotType": "manual"
@@ -190,7 +190,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+rds\\s+describe-db-snapshots\\s+--db-snapshot-identifier\\s+ctf-public-snap\\s*$"
+        "regex": "^aws\\s+rds\\s+describe-db-snapshots\\s+--db-snapshot-identifier\\s+rdsnap\\\\-appdb\\\\-20251001\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -202,7 +202,7 @@
         "json": {
           "DBSnapshots": [
             {
-              "DBSnapshotIdentifier": "{{custom.publicSnapshotId}}",
+              "DBSnapshotIdentifier": "rdsnap-appdb-20251001",
               "DBInstanceIdentifier": "prod-app-db",
               "SnapshotCreateTime": "2025-10-01T00:00:00+00:00",
               "Engine": "mysql",
@@ -214,7 +214,7 @@
               "Encrypted": false,
               "StorageType": "gp2",
               "IAMDatabaseAuthenticationEnabled": false,
-              "DBSnapshotArn": "{{custom.publicSnapshotArn}}",
+              "DBSnapshotArn": "arn:aws:rds:us-east-1:444444444444:snapshot:rdsnap-appdb-20251001",
               "SourceRegion": "us-east-1",
               "PercentProgress": 100,
               "SnapshotType": "public"
@@ -225,7 +225,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+rds\\s+list-tags-for-resource\\s+--resource-name\\s+arn:aws:rds:us-east-1:[0-9]{12}:snapshot:ctf-public-snap\\s*$"
+        "regex": "^aws\\s+rds\\s+list-tags-for-resource\\s+--resource-name\\s+arn:aws:rds:us-east-1:[0-9]{12}:snapshot:rdsnap\\-appdb\\-20251001\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -254,7 +254,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+rds\\s+list-tags-for-resource\\s+--resource-name\\s+arn:aws:rds:us-east-1:[0-9]{12}:snapshot:marketing-backup-2025-10-01\\s*$"
+        "regex": "^aws\\s+rds\\s+list-tags-for-resource\\s+--resource-name\\s+arn:aws:rds:us-east-1:[0-9]{12}:snapshot:rdsnap\\-marketing\\-20250920\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -279,7 +279,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+rds\\s+describe-db-snapshot-attributes\\s+--db-snapshot-identifier\\s+ctf-public-snap\\s*$"
+        "regex": "^aws\\s+rds\\s+describe-db-snapshot-attributes\\s+--db-snapshot-identifier\\s+rdsnap\\\\-appdb\\\\-20251001\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -290,7 +290,7 @@
         "render": "json",
         "json": {
           "DBSnapshotAttributesResult": {
-            "DBSnapshotIdentifier": "{{custom.publicSnapshotId}}",
+            "DBSnapshotIdentifier": "rdsnap-appdb-20251001",
             "DBSnapshotAttributes": [
               {
                 "AttributeName": "restore",
@@ -305,7 +305,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+rds\\s+describe-db-snapshot-attributes\\s+--db-snapshot-identifier\\s+marketing-backup-2025-10-01\\s*$"
+        "regex": "^aws\\s+rds\\s+describe-db-snapshot-attributes\\s+--db-snapshot-identifier\\s+rdsnap\\\\-marketing\\\\-20250920\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -316,12 +316,12 @@
         "render": "json",
         "json": {
           "DBSnapshotAttributesResult": {
-            "DBSnapshotIdentifier": "{{custom.decoySnapshotId}}",
+            "DBSnapshotIdentifier": "rdsnap-marketing-20250920",
             "DBSnapshotAttributes": [
               {
                 "AttributeName": "restore",
                 "AttributeValues": [
-                  "123456789012"
+                  "444444444444"
                 ]
               }
             ]
@@ -331,7 +331,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+ec2\\s+describe-security-groups\\s+--group-ids\\s+sg-0a1b2c3d4e5f67890\\s*$"
+        "regex": "^aws\\s+ec2\\s+describe-security-groups\\s+--group-ids\\s+sg\\\\-0rdsnap123abc\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -343,8 +343,8 @@
         "json": {
           "SecurityGroups": [
             {
-              "GroupId": "{{custom.auditSecurityGroupId}}",
-              "GroupName": "{{custom.auditSecurityGroupName}}",
+              "GroupId": "sg-0rdsnap123abc",
+              "GroupName": "rdsnap-audit-sg",
               "Description": "Shared read access for audit snapshots",
               "VpcId": "vpc-0123456789abcdef0",
               "IpPermissions": [

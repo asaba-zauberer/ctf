@@ -9,10 +9,10 @@
     "region": "",
     "identities": [
       {
-        "id": "userA",
-        "accountId": "123456789012",
-        "arn": "arn:aws:iam::123456789012:user/userA",
-        "userName": "userA",
+        "id": "platform.akira.uchida",
+        "accountId": "666666666666",
+        "arn": "arn:aws:iam::666666666666:user/platform.akira.uchida",
+        "userName": "platform.akira.uchida",
         "policies": [
           "iam:ListRoles",
           "iam:GetRole",
@@ -24,10 +24,10 @@
         ]
       },
       {
-        "id": "audit-role",
-        "accountId": "123456789012",
-        "arn": "arn:aws:iam::123456789012:role/audit-role",
-        "userName": "audit-role",
+        "id": "iamassume-audit-role",
+        "accountId": "666666666666",
+        "arn": "arn:aws:iam::666666666666:role/iamassume-audit-role",
+        "userName": "iamassume-audit-role",
         "policies": [
           "secretsmanager:ListSecrets",
           "secretsmanager:GetSecretValue",
@@ -36,11 +36,11 @@
         ]
       }
     ],
-    "activeIdentity": "userA",
+    "activeIdentity": "platform.akira.uchida",
     "custom": {
       "flag": "flag{secrets-from-assumed-role-123}",
-      "secretId": "prod/db/password",
-      "legacyPolicyArn": "arn:aws:iam::123456789012:policy/legacy-assume-audit"
+      "secretId": "prod/iamassume/db/password",
+      "legacyPolicyArn": "arn:aws:iam::666666666666:policy/iamassume-legacy-assume"
     }
   },
   "commands": [
@@ -51,9 +51,9 @@
       "response": {
         "render": "json",
         "json": {
-          "UserId": "AIDAEXAMPLE",
-          "Account": "123456789012",
-          "Arn": "arn:aws:iam::123456789012:user/userA"
+          "UserId": "AIDACTFIAMASSUME01",
+          "Account": "666666666666",
+          "Arn": "arn:aws:iam::666666666666:user/platform.akira.uchida"
         }
       }
     },
@@ -87,9 +87,9 @@
           "Roles": [
             {
               "Path": "/",
-              "RoleName": "audit-role",
-              "RoleId": "AROAXXXXXEXAMPLE",
-              "Arn": "arn:aws:iam::123456789012:role/audit-role",
+              "RoleName": "iamassume-audit-role",
+              "RoleId": "AROACTFIAMASSUME1",
+              "Arn": "arn:aws:iam::666666666666:role/iamassume-audit-role",
               "CreateDate": "2025-10-04T00:00:00+00:00"
             }
           ]
@@ -103,7 +103,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+get-role\\s+--role-name\\s+audit-role\\s*$"
+        "regex": "^aws\\s+iam\\s+get-role\\s+--role-name\\s+iamassume\\-audit\\-role\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -115,9 +115,9 @@
         "json": {
           "Role": {
             "Path": "/",
-            "RoleName": "audit-role",
-            "RoleId": "AROAXXXXXEXAMPLE",
-            "Arn": "arn:aws:iam::123456789012:role/audit-role",
+            "RoleName": "iamassume-audit-role",
+            "RoleId": "AROACTFIAMASSUME1",
+            "Arn": "arn:aws:iam::666666666666:role/iamassume-audit-role",
             "AssumeRolePolicyDocument": "{ \"Version\":\"2012-10-17\", \"Statement\": [{ \"Effect\": \"Allow\", \"Principal\": {\"AWS\": \"*\"}, \"Action\": \"sts:AssumeRole\" }] }",
             "CreateDate": "2025-10-04T00:00:00+00:00"
           }
@@ -126,7 +126,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+list-attached-role-policies\\s+--role-name\\s+audit-role\\s*$"
+        "regex": "^aws\\s+iam\\s+list-attached-role-policies\\s+--role-name\\s+iamassume\\-audit\\-role\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -138,8 +138,8 @@
         "json": {
           "AttachedPolicies": [
             {
-              "PolicyName": "legacy-assume-audit",
-              "PolicyArn": "arn:aws:iam::123456789012:policy/legacy-assume-audit"
+              "PolicyName": "iamassume-legacy-assume",
+              "PolicyArn": "arn:aws:iam::666666666666:policy/iamassume-legacy-assume"
             }
           ]
         }
@@ -147,7 +147,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+get-policy\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/legacy-assume-audit\\s*$"
+        "regex": "^aws\\s+iam\\s+get-policy\\s+--policy-arn\\s+arn:aws:iam::666666666666:policy/iamassume-legacy-assume\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -158,9 +158,9 @@
         "render": "json",
         "json": {
           "Policy": {
-            "PolicyName": "legacy-assume-audit",
+            "PolicyName": "iamassume-legacy-assume",
             "PolicyId": "ANPAEXAMPLE",
-            "Arn": "arn:aws:iam::123456789012:policy/legacy-assume-audit",
+            "Arn": "arn:aws:iam::666666666666:policy/iamassume-legacy-assume",
             "Path": "/",
             "DefaultVersionId": "v2",
             "AttachmentCount": 1,
@@ -173,7 +173,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+list-policy-versions\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/legacy-assume-audit\\s*$"
+        "regex": "^aws\\s+iam\\s+list-policy-versions\\s+--policy-arn\\s+arn:aws:iam::666666666666:policy/iamassume-legacy-assume\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -200,7 +200,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/legacy-assume-audit\\s+--version-id\\s+v2\\s*$"
+        "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::666666666666:policy/iamassume-legacy-assume\\s+--version-id\\s+v2\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -221,7 +221,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/legacy-assume-audit\\s+--version-id\\s+v1\\s*$"
+        "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::666666666666:policy/iamassume-legacy-assume\\s+--version-id\\s+v1\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -232,7 +232,7 @@
         "render": "json",
         "json": {
           "PolicyVersion": {
-            "Document": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AssumeAudit\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"sts:AssumeRole\"],\n      \"Resource\": \"arn:aws:iam::123456789012:role/audit-role\"\n    }\n  ]\n}",
+            "Document": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AssumeAudit\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"sts:AssumeRole\"],\n      \"Resource\": \"arn:aws:iam::666666666666:role/iamassume-audit-role\"\n    }\n  ]\n}",
             "VersionId": "v1",
             "IsDefaultVersion": false,
             "CreateDate": "2025-09-20T00:00:00+00:00"
@@ -242,7 +242,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+sts\\s+assume-role\\s+--role-arn\\s+arn:aws:iam::123456789012:role/audit-role\\s+--role-session-name\\s+\\S+\\s*$"
+        "regex": "^aws\\s+sts\\s+assume-role\\s+--role-arn\\s+arn:aws:iam::666666666666:role/iamassume\\-audit\\-role\\s+--role-session-name\\s+\\S+\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -253,21 +253,21 @@
         {
           "op": "set",
           "path": "activeIdentity",
-          "value": "audit-role"
+          "value": "iamassume-audit-role"
         }
       ],
       "response": {
         "render": "json",
         "json": {
           "Credentials": {
-            "AccessKeyId": "ASIAEXAMPLE",
-            "SecretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+            "AccessKeyId": "ASIACTFIAMASSUME1",
+            "SecretAccessKey": "ctfExampleSecretKey/iamassume",
             "SessionToken": "IQoJb3JpZ2luX2VjE...",
             "Expiration": "2025-10-04T02:00:00Z"
           },
           "AssumedRoleUser": {
-            "AssumedRoleId": "AROAEXAMPLE:ctf",
-            "Arn": "arn:aws:iam::123456789012:role/audit-role"
+            "AssumedRoleId": "AROACTFIAMASSUME1:ctf",
+            "Arn": "arn:aws:iam::666666666666:role/iamassume-audit-role"
           }
         }
       }
@@ -277,14 +277,14 @@
         "regex": "^aws\\s+sts\\s+get-caller-identity\\s*$"
       },
       "requires": {
-        "activeIdentity": "audit-role"
+        "activeIdentity": "iamassume-audit-role"
       },
       "response": {
         "render": "json",
         "json": {
-          "UserId": "AROAEXAMPLE:ctf",
-          "Account": "123456789012",
-          "Arn": "arn:aws:iam::123456789012:role/audit-role"
+          "UserId": "AROACTFIAMASSUME1:ctf",
+          "Account": "666666666666",
+          "Arn": "arn:aws:iam::666666666666:role/iamassume-audit-role"
         }
       }
     },
@@ -302,14 +302,14 @@
         "json": {
           "logGroups": [
             {
-              "arn": "arn:aws:logs:us-east-1:123456789012:log-group:/aws/ecs/audit-service",
-              "logGroupName": "/aws/ecs/audit-service",
+              "arn": "arn:aws:logs:us-east-1:666666666666:log-group:/aws/ecs/iamassume-audit",
+              "logGroupName": "/aws/ecs/iamassume-audit",
               "storedBytes": 0,
               "retentionInDays": 14
             },
             {
-              "arn": "arn:aws:logs:us-east-1:123456789012:log-group:/aws/ecs/public-training",
-              "logGroupName": "/aws/ecs/public-training",
+              "arn": "arn:aws:logs:us-east-1:666666666666:log-group:/aws/ecs/iamassume-training",
+              "logGroupName": "/aws/ecs/iamassume-training",
               "storedBytes": 1048576,
               "retentionInDays": 7
             }
@@ -324,7 +324,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+logs\\s+describe-log-streams\\s+--log-group-name\\s+/aws/ecs/audit-service\\s*$"
+        "regex": "^aws\\s+logs\\s+describe-log-streams\\s+--log-group-name\\s+\\/aws\\/ecs\\/iamassume-audit\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -336,8 +336,8 @@
         "json": {
           "logStreams": [
             {
-              "arn": "arn:aws:logs:us-east-1:123456789012:log-group:/aws/ecs/audit-service:log-stream:ecs/audit-service/0a1b2c3d",
-              "logStreamName": "ecs/audit-service/0a1b2c3d",
+              "arn": "arn:aws:logs:us-east-1:666666666666:log-group:/aws/ecs/iamassume-audit:log-stream:ecs/iamassume-audit/0a1b2c3d",
+              "logStreamName": "ecs/iamassume-audit/0a1b2c3d",
               "lastEventTimestamp": 1759526400000,
               "storedBytes": 2048,
               "uploadSequenceToken": "496159830347698900000000000000"
@@ -365,8 +365,8 @@
         "json": {
           "SecretList": [
             {
-              "ARN": "arn:aws:secretsmanager:us-east-1:123456789012:secret:prod/db/password",
-              "Name": "prod/db/password",
+              "ARN": "arn:aws:secretsmanager:us-east-1:666666666666:secret:prod/iamassume/db/password",
+              "Name": "prod/iamassume/db/password",
               "Description": "database password",
               "CreatedDate": "2025-10-04T00:00:00+00:00"
             }
@@ -381,7 +381,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+secretsmanager\\s+get-secret-value\\s+--secret-id\\s+prod/db/password\\s*$"
+        "regex": "^aws\\s+secretsmanager\\s+get-secret-value\\s+--secret-id\\s+prod/iamassume/db/password\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -391,8 +391,8 @@
       "response": {
         "render": "json",
         "json": {
-          "ARN": "arn:aws:secretsmanager:us-east-1:123456789012:secret:prod/db/password",
-          "Name": "prod/db/password",
+          "ARN": "arn:aws:secretsmanager:us-east-1:666666666666:secret:prod/iamassume/db/password",
+          "Name": "prod/iamassume/db/password",
           "SecretString": "flag{secrets-from-assumed-role-123}",
           "VersionId": "EXAMPLE1-90ab-cdef-fedc-ba987SECRET1"
         }

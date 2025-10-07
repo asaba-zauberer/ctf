@@ -10,10 +10,10 @@
     "env": {},
     "identities": [
       {
-        "id": "userA",
-        "accountId": "123456789012",
-        "arn": "arn:aws:iam::123456789012:user/userA",
-        "userName": "userA",
+        "id": "cloudops.hana.yamamoto",
+        "accountId": "555555555555",
+        "arn": "arn:aws:iam::555555555555:user/cloudops.hana.yamamoto",
+        "userName": "cloudops.hana.yamamoto",
         "policies": [
           "ssm:DescribeParameters",
           "ecs:ListClusters",
@@ -25,23 +25,23 @@
         ]
       },
       {
-        "id": "taskRole",
-        "accountId": "123456789012",
-        "arn": "arn:aws:iam::123456789012:role/ecsTaskRole",
-        "userName": "ecsTaskRole",
+        "id": "ecsmeta-task-role",
+        "accountId": "555555555555",
+        "arn": "arn:aws:iam::555555555555:role/ecsmeta-task-role",
+        "userName": "ecsmeta-task-role",
         "policies": [
           "ssm:DescribeParameters",
           "ssm:GetParameter"
         ]
       }
     ],
-    "activeIdentity": "userA",
+    "activeIdentity": "cloudops.hana.yamamoto",
     "custom": {
       "flag": "flag{ecs-metadata-to-ssm-123}",
-      "paramName": "/prod/app/flag",
-      "clusterName": "prod-frontend",
-      "taskArn": "arn:aws:ecs:us-east-1:123456789012:task/prod-frontend/0f1e2d3c4b5a69788776655443322110",
-      "taskDefinition": "arn:aws:ecs:us-east-1:123456789012:task-definition/prod-frontend:42"
+      "paramName": "/prod/ecsmeta/app/flag",
+      "clusterName": "ecsmeta-frontend-prod",
+      "taskArn": "arn:aws:ecs:us-east-1:555555555555:task/ecsmeta-frontend-prod/1a2b3c4d5e6f7890abcdef1234567890",
+      "taskDefinition": "arn:aws:ecs:us-east-1:555555555555:task-definition/ecsmeta-frontend:42"
     }
   },
   "commands": [
@@ -52,9 +52,9 @@
       "response": {
         "render": "json",
         "json": {
-          "UserId": "AIDAEXAMPLE",
-          "Account": "123456789012",
-          "Arn": "arn:aws:iam::123456789012:user/userA"
+          "UserId": "AIDACTFECSMETA01",
+          "Account": "555555555555",
+          "Arn": "arn:aws:iam::555555555555:user/cloudops.hana.yamamoto"
         }
       }
     },
@@ -95,14 +95,14 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+get-role\\s+--role-name\\s+ecsTaskRole\\s*$"
+        "regex": "^aws\\s+iam\\s+get-role\\s+--role-name\\s+ecsmeta-task-role\\s*$"
       },
       "response": {
         "render": "json",
         "json": {
           "Role": {
-            "RoleName": "ecsTaskRole",
-            "Arn": "arn:aws:iam::123456789012:role/ecsTaskRole",
+            "RoleName": "ecsmeta-task-role",
+            "Arn": "arn:aws:iam::555555555555:role/ecsmeta-task-role",
             "CreateDate": "2025-10-04T00:00:00+00:00"
           }
         }
@@ -110,27 +110,27 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+list-role-policies\\s+--role-name\\s+ecsTaskRole\\s*$"
+        "regex": "^aws\\s+iam\\s+list-role-policies\\s+--role-name\\s+ecsmeta-task-role\\s*$"
       },
       "response": {
         "render": "json",
         "json": {
           "PolicyNames": [
-            "TaskDiagnosticsAccess"
+            "ecsmeta-task-diagnostics"
           ]
         }
       }
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+get-role-policy\\s+--role-name\\s+ecsTaskRole\\s+--policy-name\\s+TaskDiagnosticsAccess\\s*$"
+        "regex": "^aws\\s+iam\\s+get-role-policy\\s+--role-name\\s+ecsmeta-task-role\\s+--policy-name\\s+ecsmeta-task-diagnostics\\s*$"
       },
       "response": {
         "render": "json",
         "json": {
           "Policy": {
-            "RoleName": "ecsTaskRole",
-            "PolicyName": "TaskDiagnosticsAccess",
+            "RoleName": "ecsmeta-task-role",
+            "PolicyName": "ecsmeta-task-diagnostics",
             "PolicyDocument": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowDiagnosticsParameters\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"ssm:DescribeParameters\", \"ssm:GetParameter\"],\n      \"Resource\": \"*\"\n    }\n  ]\n}"
           }
         }
@@ -149,8 +149,8 @@
         "render": "json",
         "json": {
           "clusterArns": [
-            "arn:aws:ecs:us-east-1:123456789012:cluster/{{custom.clusterName}}",
-            "arn:aws:ecs:us-east-1:123456789012:cluster/training-sandbox"
+            "arn:aws:ecs:us-east-1:555555555555:cluster/{{custom.clusterName}}",
+            "arn:aws:ecs:us-east-1:555555555555:cluster/ecsmeta-training-sandbox"
           ]
         }
       },
@@ -162,7 +162,7 @@
     },
     {
       "match": {
-        "regex": "^aws ecs list-tasks --cluster prod-frontend --desired-status RUNNING$"
+        "regex": "^aws ecs list-tasks --cluster ecsmeta-frontend-prod --desired-status RUNNING$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -185,7 +185,7 @@
     },
     {
       "match": {
-        "regex": "^aws ecs describe-tasks --cluster prod-frontend --tasks arn:aws:ecs:us-east-1:[0-9]{12}:task/prod-frontend/[A-Za-z0-9-]+$"
+        "regex": "^aws ecs describe-tasks --cluster ecsmeta-frontend-prod --tasks arn:aws:ecs:us-east-1:[0-9]{12}:task/ecsmeta-frontend-prod/[A-Za-z0-9-]+$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -198,18 +198,18 @@
           "tasks": [
             {
               "taskArn": "{{custom.taskArn}}",
-              "clusterArn": "arn:aws:ecs:us-east-1:123456789012:cluster/{{custom.clusterName}}",
+              "clusterArn": "arn:aws:ecs:us-east-1:555555555555:cluster/{{custom.clusterName}}",
               "taskDefinitionArn": "{{custom.taskDefinition}}",
               "lastStatus": "RUNNING",
               "desiredStatus": "RUNNING",
               "launchType": "FARGATE",
               "cpu": "256",
               "memory": "512",
-              "startedBy": "ecs-svc/1234567890123456789",
+              "startedBy": "ecs-svc/55555555555567890",
               "tags": [
                 {
                   "key": "Service",
-                  "value": "frontend"
+                  "value": "ecsmeta-frontend"
                 },
                 {
                   "key": "Environment",
@@ -239,8 +239,8 @@
               ],
               "containers": [
                 {
-                  "name": "frontend",
-                  "image": "123456789012.dkr.ecr.us-east-1.amazonaws.com/frontend:2025-10-03",
+                  "name": "ecsmeta-frontend",
+                  "image": "555555555555.dkr.ecr.us-east-1.amazonaws.com/ecsmeta-frontend:2025-10-03",
                   "runtimeId": "0f1e2d3c4b5a69788776655443322110-1234567890",
                   "lastStatus": "RUNNING",
                   "networkInterfaces": [
@@ -249,7 +249,8 @@
                     }
                   ]
                 }
-              ]
+              ],
+              "createdAt": "2025-10-04T00:00:00+00:00"
             }
           ]
         }
@@ -274,13 +275,13 @@
         "json": {
           "Parameters": [
             {
-              "Name": "/prod/app/flag",
+              "Name": "/prod/ecsmeta/app/flag",
               "Type": "SecureString",
               "Version": 3,
               "LastModifiedDate": "2025-10-04T00:00:00+00:00"
             },
             {
-              "Name": "/prod/app/flag-old",
+              "Name": "/prod/ecsmeta/app/flag-old",
               "Type": "SecureString",
               "Version": 1,
               "LastModifiedDate": "2025-09-20T00:00:00+00:00"
@@ -302,13 +303,13 @@
         "hasPoliciesAny": [
           "ssm:GetParameter"
         ],
-        "activeIdentity": "taskRole"
+        "activeIdentity": "ecsmeta-task-role"
       },
       "response": {
         "render": "json",
         "json": {
           "Parameter": {
-            "Name": "/prod/app/flag",
+            "Name": "/prod/ecsmeta/app/flag",
             "Type": "SecureString",
             "Value": "flag{ecs-metadata-to-ssm-123}",
             "Version": 3,

@@ -4,6 +4,7 @@
   const commandForm = document.getElementById('command-form');
   const commandInput = document.getElementById('command-input');
   const scenarioInfoEl = document.getElementById('scenario-info');
+  const scenarioSelectEl = document.getElementById('scenario-select');
   const sessionDisplayEl = document.getElementById('session-display');
   const statusMessageEl = document.getElementById('status-message');
 
@@ -12,9 +13,66 @@
   let historyIndex = -1;
   let lastOutput = '';
   let defaultRender = 'text';
+  let cliName = 'Shared CLI Terminal';
+  let scenarios = [];
+  let selectedScenario = null;
+
+  scenarioSelectEl.disabled = true;
 
   function setStatus(text) {
     statusMessageEl.textContent = text || '';
+  }
+
+  function updateSessionSummary() {
+    if (!sessionId) {
+      sessionDisplayEl.textContent = '';
+      return;
+    }
+
+    const active = scenarios.find((item) => item.slug === selectedScenario);
+    const scenarioLabel = active ? `${active.slug} (${active.name})` : 'n/a';
+    sessionDisplayEl.textContent = `Session: ${shortenSessionId(sessionId)} • Scenario: ${scenarioLabel}`;
+  }
+
+  function setSelectedScenario(slug) {
+    if (!slug) {
+      selectedScenario = null;
+      scenarioSelectEl.value = '';
+      scenarioInfoEl.textContent = cliName;
+      updateSessionSummary();
+      return;
+    }
+
+    const match = scenarios.find((item) => item.slug === slug);
+    if (!match) {
+      return;
+    }
+
+    selectedScenario = match.slug;
+    scenarioSelectEl.value = match.slug;
+    scenarioInfoEl.textContent = `${cliName} – ${match.name}`;
+    updateSessionSummary();
+  }
+
+  function populateScenarios(list, defaultSlug) {
+    scenarios = Array.isArray(list) ? list.slice() : [];
+    scenarioSelectEl.innerHTML = '';
+    scenarios.forEach((item) => {
+      const option = document.createElement('option');
+      option.value = item.slug;
+      option.textContent = `${item.slug} — ${item.name}`;
+      scenarioSelectEl.appendChild(option);
+    });
+
+    scenarioSelectEl.disabled = scenarios.length === 0;
+
+    if (scenarios.length === 0) {
+      setSelectedScenario(null);
+      return;
+    }
+
+    const preferred = scenarios.find((item) => item.slug === defaultSlug);
+    setSelectedScenario((preferred || scenarios[0]).slug);
   }
 
   function appendBlock(text, className = 'stdout') {
@@ -41,17 +99,20 @@
       if (!response.ok) throw new Error('meta request failed');
       const data = await response.json();
       sessionId = data.sessionId;
-      defaultRender = data.defaultOutput || 'text';
-     const scenarioName = data.scenarioName || 'Unknown scenario';
-     scenarioInfoEl.textContent = scenarioName;
-     sessionDisplayEl.textContent = `Session: ${shortenSessionId(sessionId)}`;
+      defaultRender = 'text';
+      cliName = data.cliName || cliName;
+      populateScenarios(data.scenarios || [], data.defaultScenario);
+      updateSessionSummary();
       appendBlock('Sessions expire automatically after 30 minutes.');
-     appendBlock('Welcome to the AWS CLI CTF simulator!');
-     appendBlock("Type AWS CLI style commands, or 'clear' to reset the terminal.");
+      appendBlock('Welcome to the AWS CLI CTF simulator!');
+      appendBlock('Select a scenario before running AWS CLI style commands, or type \"clear\" to reset the terminal.');
       commandInput.focus();
     } catch (err) {
       scenarioInfoEl.textContent = 'Scenario failed to load';
       appendBlock('Failed to load scenario metadata. Please retry later.', 'error');
+      scenarioSelectEl.disabled = true;
+      scenarioSelectEl.innerHTML = '';
+      setStatus('Meta load error');
     }
   }
 
@@ -66,12 +127,17 @@
       appendBlock('Session not ready. Refresh and try again.', 'error');
       return;
     }
+    if (!selectedScenario) {
+      appendBlock('Select a scenario before running commands.', 'error');
+      setStatus('Scenario required');
+      return;
+    }
 
     try {
       const response = await fetch('api/execute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId, command }),
+        body: JSON.stringify({ sessionId, command, scenarioSlug: selectedScenario }),
       });
       let data = {};
       try {
@@ -156,6 +222,13 @@
       setTimeout(() => commandInput.setSelectionRange(commandInput.value.length, commandInput.value.length), 0);
       event.preventDefault();
     }
+  });
+
+  scenarioSelectEl.addEventListener('change', (event) => {
+    const value = event.target.value;
+    setSelectedScenario(value);
+    setStatus(`Scenario set to ${value || 'n/a'}`);
+    commandInput.focus();
   });
 
   hydrateMeta();

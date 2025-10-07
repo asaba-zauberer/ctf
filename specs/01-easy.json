@@ -10,9 +10,9 @@
     "env": {},
     "identities": [
       {
-        "id": "userA",
-        "accountId": "123456789012",
-        "arn": "arn:aws:iam::123456789012:user/userA",
+        "id": "appsec.emi.tanaka",
+        "accountId": "111111111111",
+        "arn": "arn:aws:iam::111111111111:user/appsec.emi.tanaka",
         "policies": [
           "s3:ListAllMyBuckets",
           "s3:ListBucket",
@@ -22,16 +22,17 @@
           "iam:GetPolicy",
           "iam:ListPolicyVersions",
           "iam:GetPolicyVersion"
-        ]
+        ],
+        "userName": "appsec.emi.tanaka"
       }
     ],
-    "activeIdentity": "userA",
+    "activeIdentity": "appsec.emi.tanaka",
     "custom": {
-      "bucket": "ctf-public-bucket",
-      "backupBucket": "ctf-public-backup",
+      "bucket": "s3pub-appsec-dev-202510-a7f3",
+      "backupBucket": "s3pub-appsec-dev-202510-b5c2",
       "flagKey": "flag.txt",
       "flag": "flag{dummy-flag-123}",
-      "readme": "Tip: Use '-' to stream to stdout (e.g., aws s3 cp s3://BUCKET/flag.txt -)"
+      "readme": "Tip: Use '-' to stream to stdout (e.g., aws s3 cp s3://s3pub-appsec-dev-202510-a7f3/flag.txt -)"
     }
   },
   "commands": [
@@ -42,9 +43,9 @@
       "response": {
         "render": "json",
         "json": {
-          "UserId": "AIDAEXAMPLE",
-          "Account": "123456789012",
-          "Arn": "arn:aws:iam::123456789012:user/userA"
+          "UserId": "AIDACTFS3PUB0001",
+          "Account": "111111111111",
+          "Arn": "arn:aws:iam::111111111111:user/appsec.emi.tanaka"
         }
       }
     },
@@ -91,8 +92,8 @@
         "render": "json",
         "json": {
           "User": {
-            "UserName": "userA",
-            "Arn": "arn:aws:iam::123456789012:user/userA",
+            "UserName": "appsec.emi.tanaka",
+            "Arn": "arn:aws:iam::111111111111:user/appsec.emi.tanaka",
             "CreateDate": "2025-10-04T00:00:00+00:00"
           }
         }
@@ -100,15 +101,15 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+list-attached-user-policies\\s+--user-name\\s+userA\\s*$"
+        "regex": "^aws\\s+iam\\s+list-attached-user-policies\\s+--user-name\\s+appsec\\\\.emi\\\\.tanaka\\s*$"
       },
       "response": {
         "render": "json",
         "json": {
           "AttachedPolicies": [
             {
-              "PolicyName": "S3PublicAccessHint",
-              "PolicyArn": "arn:aws:iam::123456789012:policy/S3PublicAccessHint"
+              "PolicyName": "s3pub-list-get",
+              "PolicyArn": "arn:aws:iam::111111111111:policy/s3pub-list-get"
             }
           ]
         }
@@ -116,14 +117,14 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+get-policy\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/S3PublicAccessHint\\s*$"
+        "regex": "^aws\\s+iam\\s+get-policy\\s+--policy-arn\\s+arn:aws:iam::111111111111:policy/s3pub-list-get\\s*$"
       },
       "response": {
         "render": "json",
         "json": {
           "Policy": {
-            "PolicyName": "S3PublicAccessHint",
-            "Arn": "arn:aws:iam::123456789012:policy/S3PublicAccessHint",
+            "PolicyName": "s3pub-list-get",
+            "Arn": "arn:aws:iam::111111111111:policy/s3pub-list-get",
             "DefaultVersionId": "v1",
             "AttachmentCount": 1,
             "CreateDate": "2025-09-28T00:00:00+00:00",
@@ -134,7 +135,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+list-policy-versions\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/S3PublicAccessHint\\s*$"
+        "regex": "^aws\\s+iam\\s+list-policy-versions\\s+--policy-arn\\s+arn:aws:iam::111111111111:policy/s3pub-list-get\\s*$"
       },
       "response": {
         "render": "json",
@@ -151,7 +152,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/S3PublicAccessHint\\s+--version-id\\s+v1\\s*$"
+        "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::111111111111:policy/s3pub-list-get\\s+--version-id\\s+v1\\s*$"
       },
       "response": {
         "render": "json",
@@ -159,7 +160,7 @@
           "PolicyVersion": {
             "VersionId": "v1",
             "IsDefaultVersion": true,
-            "Document": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowPublicBucketRead\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"s3:ListBucket\", \"s3:GetObject\"],\n      \"Resource\": [\"arn:aws:s3:::ctf-public-bucket\", \"arn:aws:s3:::ctf-public-bucket/*\"]\n    }\n  ]\n}"
+            "Document": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowPublicBucketRead\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"s3:ListBucket\", \"s3:GetObject\"],\n      \"Resource\": [\"arn:aws:s3:::s3pub-appsec-dev-202510-a7f3\", \"arn:aws:s3:::s3pub-appsec-dev-202510-a7f3/*\"]\n    }\n  ]\n}"
           }
         }
       }
@@ -169,7 +170,7 @@
         "regex": "^aws\\s+s3\\s+ls\\s*$"
       },
       "response": {
-        "text": "2025-10-04 00:00:00 ctf-public-bucket\n2025-10-04 00:00:00 ctf-public-backup\n"
+        "text": "2025-10-04 00:00:00 s3pub-appsec-dev-202510-a7f3\n2025-10-04 00:00:00 s3pub-appsec-dev-202510-b5c2\n"
       },
       "errorOnFail": {
         "errorCode": "UnknownOperation",
@@ -179,7 +180,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-bucket/?$"
+        "regex": "^aws\\s+s3\\s+ls\\s+s3://s3pub-appsec-dev-202510-a7f3/?$"
       },
       "response": {
         "text": "                           PRE assets/\n2025-10-04 00:00:00          87 readme.txt\n2025-10-04 00:00:00          12 flag.txt\n2025-10-04 00:00:00          64 flag.txt.gpg\n"
@@ -187,7 +188,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-bucket/assets/?$"
+        "regex": "^aws\\s+s3\\s+ls\\s+s3://s3pub-appsec-dev-202510-a7f3/assets/?$"
       },
       "response": {
         "text": "2025-10-04 00:00:00         124 manual.pdf\n2025-10-04 00:00:00          42 notes.txt\n2025-10-04 00:00:00          33 checklist.md\n"
@@ -195,7 +196,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-backup/?$"
+        "regex": "^aws\\s+s3\\s+ls\\s+s3://s3pub-appsec-dev-202510-b5c2/?$"
       },
       "response": {
         "text": "2025-10-04 00:00:00          98 decoy-flag.txt\n"
@@ -203,15 +204,15 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/readme.txt\\s+-\\s*$"
+        "regex": "^aws\\s+s3\\s+cp\\s+s3://s3pub-appsec-dev-202510-a7f3/readme.txt\\s+-\\s*$"
       },
       "response": {
-        "text": "Tip: Use '-' to stream to stdout (e.g., aws s3 cp s3://ctf-public-bucket/flag.txt -)\n"
+        "text": "Tip: Use '-' to stream to stdout (e.g., aws s3 cp s3://s3pub-appsec-dev-202510-a7f3/flag.txt -)\n"
       }
     },
     {
       "match": {
-        "regex": "^aws\\s+s3api\\s+head-object\\s+--bucket\\s+ctf-public-bucket\\s+--key\\s+flag.txt\\s*$"
+        "regex": "^aws\\s+s3api\\s+head-object\\s+--bucket\\s+s3pub-appsec-dev-202510-a7f3\\s+--key\\s+flag.txt\\s*$"
       },
       "response": {
         "render": "json",
@@ -229,7 +230,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/flag.txt\\s+-\\s*$"
+        "regex": "^aws\\s+s3\\s+cp\\s+s3://s3pub-appsec-dev-202510-a7f3/flag.txt\\s+-\\s*$"
       },
       "response": {
         "text": "flag{dummy-flag-123}\n"
@@ -237,7 +238,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/flag.txt\\s*$"
+        "regex": "^aws\\s+s3\\s+cp\\s+s3://s3pub-appsec-dev-202510-a7f3/flag.txt\\s*$"
       },
       "response": {
         "text": "usage: aws s3 cp <S3Uri> <LocalPath|-> [--recursive] [--exclude] [--include] [...]\n"
@@ -250,7 +251,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-backup/decoy-flag.txt\\s+-\\s*$"
+        "regex": "^aws\\s+s3\\s+cp\\s+s3://s3pub-appsec-dev-202510-b5c2/decoy-flag.txt\\s+-\\s*$"
       },
       "response": {
         "text": "not_a_flag{nice-try}\n"

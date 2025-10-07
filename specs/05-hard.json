@@ -10,10 +10,10 @@
     "env": {},
     "identities": [
       {
-        "id": "userA",
-        "accountId": "123456789012",
-        "arn": "arn:aws:iam::123456789012:user/userA",
-        "userName": "userA",
+        "id": "crypto.riku.aoyama",
+        "accountId": "333333333333",
+        "arn": "arn:aws:iam::333333333333:user/crypto.riku.aoyama",
+        "userName": "crypto.riku.aoyama",
         "policies": [
           "kms:ListKeys",
           "kms:DescribeKey",
@@ -28,12 +28,12 @@
         ]
       }
     ],
-    "activeIdentity": "userA",
+    "activeIdentity": "crypto.riku.aoyama",
     "custom": {
-      "accountId": "123456789012",
+      "accountId": "333333333333",
       "region": "us-east-1",
-      "keyId": "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555",
-      "bucket": "kms-lab-bucket",
+      "keyId": "arn:aws:kms:us-east-1:333333333333:key/0f1e2d3c-4b5a-6978-8877-665544332211",
+      "bucket": "kmsper-crypto-prod-202510-c4d2",
       "cipherKey": "cipher.bin",
       "flag_b64": "ZmxhZ3trbXMtZGVjcnlwdC1wZXJtaXNzaXZlLXBvbGljeS0xMjN9",
       "flag": "flag{kms-decrypt-permissive-policy-123}",
@@ -48,9 +48,9 @@
       "response": {
         "render": "json",
         "json": {
-          "UserId": "AIDAEXAMPLE",
-          "Account": "123456789012",
-          "Arn": "arn:aws:iam::123456789012:user/userA"
+          "UserId": "AIDACTFKMSPER01",
+          "Account": "333333333333",
+          "Arn": "arn:aws:iam::333333333333:user/crypto.riku.aoyama"
         }
       }
     },
@@ -97,8 +97,8 @@
         "render": "json",
         "json": {
           "User": {
-            "UserName": "userA",
-            "Arn": "arn:aws:iam::123456789012:user/userA",
+            "UserName": "crypto.riku.aoyama",
+            "Arn": "arn:aws:iam::333333333333:user/crypto.riku.aoyama",
             "CreateDate": "2025-10-04T00:00:00+00:00"
           }
         }
@@ -106,27 +106,27 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+list-user-policies\\s+--user-name\\s+userA\\s*$"
+        "regex": "^aws\\s+iam\\s+list-user-policies\\s+--user-name\\s+crypto\\\\.riku\\\\.aoyama\\s*$"
       },
       "response": {
         "render": "json",
         "json": {
           "PolicyNames": [
-            "KMSDecryptNotes"
+            "kmsper-decrypt-notes"
           ]
         }
       }
     },
     {
       "match": {
-        "regex": "^aws\\s+iam\\s+get-user-policy\\s+--user-name\\s+userA\\s+--policy-name\\s+KMSDecryptNotes\\s*$"
+        "regex": "^aws\\s+iam\\s+get-user-policy\\s+--user-name\\s+crypto\\\\.riku\\\\.aoyama\\s+--policy-name\\s+kmsper-decrypt-notes\\s*$"
       },
       "response": {
         "render": "json",
         "json": {
           "Policy": {
-            "UserName": "userA",
-            "PolicyName": "KMSDecryptNotes",
+            "UserName": "crypto.riku.aoyama",
+            "PolicyName": "kmsper-decrypt-notes",
             "PolicyDocument": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"ReviewEncryptedArtifacts\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"kms:ListKeys\", \"kms:DescribeKey\"],\n      \"Resource\": \"*\"\n    }\n  ]\n}"
           }
         }
@@ -146,8 +146,8 @@
         "json": {
           "Keys": [
             {
-              "KeyId": "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555",
-              "KeyArn": "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555"
+              "KeyId": "arn:aws:kms:us-east-1:333333333333:key/0f1e2d3c-4b5a-6978-8877-665544332211",
+              "KeyArn": "arn:aws:kms:us-east-1:333333333333:key/0f1e2d3c-4b5a-6978-8877-665544332211"
             }
           ]
         }
@@ -172,14 +172,14 @@
         "json": {
           "Aliases": [
             {
-              "AliasName": "alias/prod-app-key",
-              "AliasArn": "arn:aws:kms:us-east-1:123456789012:alias/prod-app-key",
-              "TargetKeyId": "11111111-2222-3333-4444-555555555555"
+              "AliasName": "alias/kmsper-app-prod",
+              "AliasArn": "arn:aws:kms:us-east-1:333333333333:alias/kmsper-app-prod",
+              "TargetKeyId": "0f1e2d3c-4b5a-6978-8877-665544332211"
             },
             {
-              "AliasName": "alias/marketing-reports",
-              "AliasArn": "arn:aws:kms:us-east-1:123456789012:alias/marketing-reports",
-              "TargetKeyId": "99999999-aaaa-bbbb-cccc-dddddddddddd"
+              "AliasName": "alias/kmsper-marketing",
+              "AliasArn": "arn:aws:kms:us-east-1:333333333333:alias/kmsper-marketing",
+              "TargetKeyId": "0f1e2d3c-4b5a-6978-8877-665544332211"
             }
           ]
         }
@@ -203,9 +203,9 @@
         "render": "json",
         "json": {
           "KeyMetadata": {
-            "AWSAccountId": "123456789012",
-            "KeyId": "11111111-2222-3333-4444-555555555555",
-            "Arn": "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555",
+            "AWSAccountId": "333333333333",
+            "KeyId": "arn:aws:kms:us-east-1:333333333333:key/0f1e2d3c-4b5a-6978-8877-665544332211",
+            "Arn": "arn:aws:kms:us-east-1:333333333333:key/0f1e2d3c-4b5a-6978-8877-665544332211",
             "CreationDate": "2025-10-04T00:00:00+00:00",
             "Enabled": true,
             "KeyState": "Enabled",
@@ -217,7 +217,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+kms\\s+describe-key\\s+--key-id\\s+alias/prod-app-key\\s*$"
+        "regex": "^aws\\s+kms\\s+describe-key\\s+--key-id\\s+alias\\/kmsper\\-app\\-prod\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -228,9 +228,9 @@
         "render": "json",
         "json": {
           "KeyMetadata": {
-            "AWSAccountId": "123456789012",
-            "KeyId": "11111111-2222-3333-4444-555555555555",
-            "Arn": "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555",
+            "AWSAccountId": "333333333333",
+            "KeyId": "arn:aws:kms:us-east-1:333333333333:key/0f1e2d3c-4b5a-6978-8877-665544332211",
+            "Arn": "arn:aws:kms:us-east-1:333333333333:key/0f1e2d3c-4b5a-6978-8877-665544332211",
             "CreationDate": "2025-10-04T00:00:00+00:00",
             "Enabled": true,
             "KeyState": "Enabled",
@@ -252,7 +252,7 @@
       "response": {
         "render": "json",
         "json": {
-          "Policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowDecryptToEveryone\",\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Action\": [\"kms:Decrypt\"],\n      \"Resource\": \"arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555\"\n    }\n  ]\n}"
+          "Policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowDecryptToEveryone\",\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Action\": [\"kms:Decrypt\"],\n      \"Resource\": \"arn:aws:kms:us-east-1:333333333333:key/0f1e2d3c-4b5a-6978-8877-665544332211\"\n    }\n  ]\n}"
         }
       }
     },
@@ -288,7 +288,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+s3\\s+ls\\s+s3://kms-lab-bucket/?$"
+        "regex": "^aws\\s+s3\\s+ls\\s+s3://kmsper\\-crypto\\-prod\\-202510\\-c4d2/?$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -301,7 +301,7 @@
     },
     {
       "match": {
-        "regex": "^aws\\s+s3\\s+cp\\s+s3://kms-lab-bucket/cipher\\.bin\\s+\\.\\s*$"
+        "regex": "^aws\\s+s3\\s+cp\\s+s3://kmsper\\-crypto\\-prod\\-202510\\-c4d2/cipher\\.bin\\s+\\.\\s*$"
       },
       "requires": {
         "hasPoliciesAny": [
@@ -316,7 +316,7 @@
         }
       ],
       "response": {
-        "text": "download: s3://kms-lab-bucket/cipher.bin to ./cipher.bin\n"
+        "text": "download: s3://kmsper-crypto-prod-202510-c4d2/cipher.bin to ./cipher.bin\n"
       }
     },
     {
@@ -331,7 +331,7 @@
       "response": {
         "render": "json",
         "json": {
-          "KeyId": "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555",
+          "KeyId": "arn:aws:kms:us-east-1:333333333333:key/0f1e2d3c-4b5a-6978-8877-665544332211",
           "Plaintext": "ZmxhZ3trbXMtZGVjcnlwdC1wZXJtaXNzaXZlLXBvbGljeS0xMjN9"
         }
       }
