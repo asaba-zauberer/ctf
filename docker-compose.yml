@@ -3,7 +3,7 @@ services:
   web:
     build: .
     ports:
-      - "8000:8000"
+      - "10000:9999"
     environment:
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
