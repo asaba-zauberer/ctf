@@ -39,7 +39,9 @@
   },
   "commands": [
     {
-      "match": { "equals": "aws sts get-caller-identity" },
+      "match": {
+        "equals": "aws sts get-caller-identity"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -50,21 +52,44 @@
       }
     },
     {
-      "match": { "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$" },
-      "mutateState": [{ "op": "set", "path": "region", "value": "us-east-1" }],
-      "response": { "text": "" }
-    },
-    {
-      "match": { "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$" },
+      "match": {
+        "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$"
+      },
       "mutateState": [
-        { "op": "set", "path": "env.AWS_DEFAULT_REGION", "value": "us-east-1" },
-        { "op": "set", "path": "region", "value": "us-east-1" }
+        {
+          "op": "set",
+          "path": "region",
+          "value": "us-east-1"
+        }
       ],
-      "response": { "text": "" }
+      "response": {
+        "text": ""
+      }
     },
     {
-      "match": { "regex": "^aws\\s+iam\\s+get-user\\s*$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$"
+      },
+      "mutateState": [
+        {
+          "op": "set",
+          "path": "env.AWS_DEFAULT_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "op": "set",
+          "path": "region",
+          "value": "us-east-1"
+        }
+      ],
+      "response": {
+        "text": ""
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-user\\s*$"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -80,7 +105,6 @@
       "match": {
         "regex": "^aws\\s+iam\\s+list-groups-for-user\\s+--user-name\\s+userA\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
@@ -95,8 +119,9 @@
       }
     },
     {
-      "match": { "regex": "^aws\\s+iam\\s+get-group\\s+--group-name\\s+queue-ops\\s*$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-group\\s+--group-name\\s+queue-ops\\s*$"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -106,7 +131,10 @@
             "CreateDate": "2025-09-25T00:00:00+00:00"
           },
           "Users": [
-            { "UserName": "userA", "Arn": "arn:aws:iam::123456789012:user/userA" }
+            {
+              "UserName": "userA",
+              "Arn": "arn:aws:iam::123456789012:user/userA"
+            }
           ]
         }
       }
@@ -115,7 +143,6 @@
       "match": {
         "regex": "^aws\\s+iam\\s+list-attached-group-policies\\s+--group-name\\s+queue-ops\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
@@ -132,7 +159,6 @@
       "match": {
         "regex": "^aws\\s+iam\\s+get-policy\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/QueueReceivePublic\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
@@ -151,7 +177,6 @@
       "match": {
         "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/QueueReceivePublic\\s+--version-id\\s+v1\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
@@ -164,8 +189,14 @@
       }
     },
     {
-      "match": { "regex": "^aws\\s+sqs\\s+list-queues\\s*$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["sqs:ListQueues"] },
+      "match": {
+        "regex": "^aws\\s+sqs\\s+list-queues\\s*$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "sqs:ListQueues"
+        ]
+      },
       "response": {
         "render": "json",
         "json": {
@@ -182,8 +213,14 @@
       }
     },
     {
-      "match": { "regex": "^aws\\s+sqs\\s+get-queue-attributes\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/public-queue\\s+--attribute-names\\s+All\\s*$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["sqs:GetQueueAttributes"] },
+      "match": {
+        "regex": "^aws\\s+sqs\\s+get-queue-attributes\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/public-queue\\s+--attribute-names\\s+All\\s*$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "sqs:GetQueueAttributes"
+        ]
+      },
       "response": {
         "render": "json",
         "json": {
@@ -197,8 +234,14 @@
       }
     },
     {
-      "match": { "regex": "^aws\\s+sqs\\s+get-queue-attributes\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/private-queue\\s+--attribute-names\\s+All\\s*$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["sqs:GetQueueAttributes"] },
+      "match": {
+        "regex": "^aws\\s+sqs\\s+get-queue-attributes\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/private-queue\\s+--attribute-names\\s+All\\s*$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "sqs:GetQueueAttributes"
+        ]
+      },
       "response": {
         "render": "json",
         "json": {
@@ -212,8 +255,9 @@
       }
     },
     {
-      "match": { "regex": "^aws\\s+sqs\\s+receive-message\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/public-queue\\s*$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^aws\\s+sqs\\s+receive-message\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/public-queue\\s*$"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -229,9 +273,12 @@
       }
     },
     {
-      "match": { "regex": "^aws\\s+sqs\\s+receive-message\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/private-queue\\s*$" },
-      "requires": { "regionSet": true },
-      "response": { "text": "" },
+      "match": {
+        "regex": "^aws\\s+sqs\\s+receive-message\\s+--queue-url\\s+https://sqs\\.us-east-1\\.[0-9]{12}\\.amazonaws\\.com/[0-9]{12}/private-queue\\s*$"
+      },
+      "response": {
+        "text": ""
+      },
       "errorOnFail": {
         "errorCode": "AccessDenied",
         "message": "An error occurred (AccessDenied) when calling the ReceiveMessage operation: Access Denied",
@@ -239,10 +286,13 @@
       }
     },
     {
-      "match": { "regex": "^aws\\s+ec2\\s+describe-instances\\s*$" },
+      "match": {
+        "regex": "^aws\\s+ec2\\s+describe-instances\\s*$"
+      },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["ec2:DescribeInstances"]
+        "hasPoliciesAny": [
+          "ec2:DescribeInstances"
+        ]
       },
       "response": {
         "render": "json",
@@ -256,11 +306,19 @@
                   "InstanceId": "i-0queueworkers12345",
                   "InstanceType": "t3.small",
                   "AvailabilityZone": "us-east-1a",
-                  "State": { "Name": "running" },
+                  "State": {
+                    "Name": "running"
+                  },
                   "PrivateIpAddress": "10.0.12.45",
                   "Tags": [
-                    { "Key": "Name", "Value": "queue-workers" },
-                    { "Key": "Service", "Value": "sqs-demo" }
+                    {
+                      "Key": "Name",
+                      "Value": "queue-workers"
+                    },
+                    {
+                      "Key": "Service",
+                      "Value": "sqs-demo"
+                    }
                   ],
                   "SecurityGroups": [
                     {
@@ -286,8 +344,9 @@
         "regex": "^aws\\s+ec2\\s+describe-security-groups\\s+--group-ids\\s+sg-0queue12345\\s*$"
       },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["ec2:DescribeSecurityGroups"]
+        "hasPoliciesAny": [
+          "ec2:DescribeSecurityGroups"
+        ]
       },
       "response": {
         "render": "json",
@@ -320,7 +379,12 @@
                   ]
                 }
               ],
-              "Tags": [{ "Key": "Team", "Value": "QueueOps" }]
+              "Tags": [
+                {
+                  "Key": "Team",
+                  "Value": "QueueOps"
+                }
+              ]
             }
           ]
         }

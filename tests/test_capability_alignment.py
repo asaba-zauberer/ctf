@@ -79,7 +79,7 @@ def test_major_actions_have_commands(spec_path):
 
 
 @pytest.mark.parametrize("spec_path", SPEC_PATHS)
-def test_capability_commands_require_region(spec_path):
+def test_capability_commands_do_not_require_region(spec_path):
     spec = load_spec(spec_path)
     matchers = command_match_strings(spec)
     for command in spec.get("commands", []) or []:
@@ -92,6 +92,6 @@ def test_capability_commands_require_region(spec_path):
         requires = command.get("requires") or {}
         for action, patterns in CAPABILITY_MAP.items():
             if any(pattern_matches(pattern, m) for pattern in patterns for m in matcher_strings):
-                assert requires.get("regionSet") is True, (
-                    f"{spec_path.name}: command {match} for action {action} must require region"
+                assert "regionSet" not in requires or requires.get("regionSet") is False, (
+                    f"{spec_path.name}: command {match} for action {action} should not require region"
                 )

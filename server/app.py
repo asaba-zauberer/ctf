@@ -35,7 +35,7 @@ def create_app() -> Flask:
         static_folder=None,
     )
 
-    logger = configure_logging(LOG_DIR)
+    logger = configure_logging(LOG_DIR, enable=app.debug)
     scenario_manager = ScenarioManager()
     state_store = SessionStateStore()
     rate_limiter = RateLimiter(limit=RATE_LIMIT_PER_SECOND, interval_seconds=1.0)

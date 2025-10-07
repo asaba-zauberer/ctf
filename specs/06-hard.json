@@ -46,7 +46,9 @@
   },
   "commands": [
     {
-      "match": { "equals": "aws sts get-caller-identity" },
+      "match": {
+        "equals": "aws sts get-caller-identity"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -57,11 +59,19 @@
       }
     },
     {
-      "match": { "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$" },
+      "match": {
+        "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$"
+      },
       "mutateState": [
-        { "op": "set", "path": "region", "value": "us-east-1" }
+        {
+          "op": "set",
+          "path": "region",
+          "value": "us-east-1"
+        }
       ],
-      "response": { "text": "" }
+      "response": {
+        "text": ""
+      }
     },
     {
       "match": {
@@ -73,13 +83,20 @@
           "path": "env.AWS_DEFAULT_REGION",
           "value": "us-east-1"
         },
-        { "op": "set", "path": "region", "value": "us-east-1" }
+        {
+          "op": "set",
+          "path": "region",
+          "value": "us-east-1"
+        }
       ],
-      "response": { "text": "" }
+      "response": {
+        "text": ""
+      }
     },
     {
-      "match": { "regex": "^aws\\s+iam\\s+get-role\\s+--role-name\\s+ecsTaskRole\\s*$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-role\\s+--role-name\\s+ecsTaskRole\\s*$"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -95,11 +112,12 @@
       "match": {
         "regex": "^aws\\s+iam\\s+list-role-policies\\s+--role-name\\s+ecsTaskRole\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
-          "PolicyNames": ["TaskDiagnosticsAccess"]
+          "PolicyNames": [
+            "TaskDiagnosticsAccess"
+          ]
         }
       }
     },
@@ -107,7 +125,6 @@
       "match": {
         "regex": "^aws\\s+iam\\s+get-role-policy\\s+--role-name\\s+ecsTaskRole\\s+--policy-name\\s+TaskDiagnosticsAccess\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
@@ -120,10 +137,13 @@
       }
     },
     {
-      "match": { "regex": "^aws ecs list-clusters$" },
+      "match": {
+        "regex": "^aws ecs list-clusters$"
+      },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["ecs:ListClusters"]
+        "hasPoliciesAny": [
+          "ecs:ListClusters"
+        ]
       },
       "response": {
         "render": "json",
@@ -145,13 +165,16 @@
         "regex": "^aws ecs list-tasks --cluster prod-frontend --desired-status RUNNING$"
       },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["ecs:ListTasks"]
+        "hasPoliciesAny": [
+          "ecs:ListTasks"
+        ]
       },
       "response": {
         "render": "json",
         "json": {
-          "taskArns": ["{{custom.taskArn}}"]
+          "taskArns": [
+            "{{custom.taskArn}}"
+          ]
         }
       },
       "errorOnFail": {
@@ -165,8 +188,9 @@
         "regex": "^aws ecs describe-tasks --cluster prod-frontend --tasks arn:aws:ecs:us-east-1:[0-9]{12}:task/prod-frontend/[A-Za-z0-9-]+$"
       },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["ecs:DescribeTasks"]
+        "hasPoliciesAny": [
+          "ecs:DescribeTasks"
+        ]
       },
       "response": {
         "render": "json",
@@ -183,8 +207,14 @@
               "memory": "512",
               "startedBy": "ecs-svc/1234567890123456789",
               "tags": [
-                { "key": "Service", "value": "frontend" },
-                { "key": "Environment", "value": "production" }
+                {
+                  "key": "Service",
+                  "value": "frontend"
+                },
+                {
+                  "key": "Environment",
+                  "value": "production"
+                }
               ],
               "attachments": [
                 {
@@ -192,9 +222,18 @@
                   "id": "eni-0abcde123456789f0",
                   "status": "ATTACHED",
                   "details": [
-                    { "name": "subnetId", "value": "subnet-0a1b2c3d4e" },
-                    { "name": "networkInterfaceId", "value": "eni-0abcde123456789f0" },
-                    { "name": "privateIPv4Address", "value": "10.0.13.24" }
+                    {
+                      "name": "subnetId",
+                      "value": "subnet-0a1b2c3d4e"
+                    },
+                    {
+                      "name": "networkInterfaceId",
+                      "value": "eni-0abcde123456789f0"
+                    },
+                    {
+                      "name": "privateIPv4Address",
+                      "value": "10.0.13.24"
+                    }
                   ]
                 }
               ],
@@ -222,10 +261,13 @@
       }
     },
     {
-      "match": { "regex": "^aws\\s+ssm\\s+describe-parameters\\s*$" },
+      "match": {
+        "regex": "^aws\\s+ssm\\s+describe-parameters\\s*$"
+      },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["ssm:DescribeParameters"]
+        "hasPoliciesAny": [
+          "ssm:DescribeParameters"
+        ]
       },
       "response": {
         "render": "json",
@@ -257,8 +299,9 @@
         "regex": "^aws\\s+ssm\\s+get-parameter\\s+--name\\s+(.+?)\\s+--with-decryption\\s*$"
       },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["ssm:GetParameter"],
+        "hasPoliciesAny": [
+          "ssm:GetParameter"
+        ],
         "activeIdentity": "taskRole"
       },
       "response": {

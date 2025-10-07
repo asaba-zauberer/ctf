@@ -36,7 +36,9 @@
   },
   "commands": [
     {
-      "match": { "equals": "aws sts get-caller-identity" },
+      "match": {
+        "equals": "aws sts get-caller-identity"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -46,23 +48,45 @@
         }
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$" },
-      "mutateState": [{ "op": "set", "path": "region", "value": "us-east-1" }],
-      "response": { "text": "" }
-    },
-    {
-      "match": { "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$" },
+      "match": {
+        "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$"
+      },
       "mutateState": [
-        { "op": "set", "path": "env.AWS_DEFAULT_REGION", "value": "us-east-1" },
-        { "op": "set", "path": "region", "value": "us-east-1" }
+        {
+          "op": "set",
+          "path": "region",
+          "value": "us-east-1"
+        }
       ],
-      "response": { "text": "" }
+      "response": {
+        "text": ""
+      }
     },
     {
-      "match": { "regex": "^aws\\s+iam\\s+get-user\\s*$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$"
+      },
+      "mutateState": [
+        {
+          "op": "set",
+          "path": "env.AWS_DEFAULT_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "op": "set",
+          "path": "region",
+          "value": "us-east-1"
+        }
+      ],
+      "response": {
+        "text": ""
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-user\\s*$"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -78,7 +102,6 @@
       "match": {
         "regex": "^aws\\s+iam\\s+list-attached-user-policies\\s+--user-name\\s+userA\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
@@ -95,7 +118,6 @@
       "match": {
         "regex": "^aws\\s+iam\\s+get-policy\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/S3PublicAccessHint\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
@@ -114,7 +136,6 @@
       "match": {
         "regex": "^aws\\s+iam\\s+list-policy-versions\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/S3PublicAccessHint\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
@@ -132,7 +153,6 @@
       "match": {
         "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/S3PublicAccessHint\\s+--version-id\\s+v1\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
@@ -144,10 +164,10 @@
         }
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+s3\\s+ls\\s*$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^aws\\s+s3\\s+ls\\s*$"
+      },
       "response": {
         "text": "2025-10-04 00:00:00 ctf-public-bucket\n2025-10-04 00:00:00 ctf-public-backup\n"
       },
@@ -157,41 +177,42 @@
         "exitCode": 255
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-bucket/?$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-bucket/?$"
+      },
       "response": {
         "text": "                           PRE assets/\n2025-10-04 00:00:00          87 readme.txt\n2025-10-04 00:00:00          12 flag.txt\n2025-10-04 00:00:00          64 flag.txt.gpg\n"
       }
     },
     {
-      "match": { "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-bucket/assets/?$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-bucket/assets/?$"
+      },
       "response": {
         "text": "2025-10-04 00:00:00         124 manual.pdf\n2025-10-04 00:00:00          42 notes.txt\n2025-10-04 00:00:00          33 checklist.md\n"
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-backup/?$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^aws\\s+s3\\s+ls\\s+s3://ctf-public-backup/?$"
+      },
       "response": {
         "text": "2025-10-04 00:00:00          98 decoy-flag.txt\n"
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/readme.txt\\s+-\\s*$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/readme.txt\\s+-\\s*$"
+      },
       "response": {
         "text": "Tip: Use '-' to stream to stdout (e.g., aws s3 cp s3://ctf-public-bucket/flag.txt -)\n"
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+s3api\\s+head-object\\s+--bucket\\s+ctf-public-bucket\\s+--key\\s+flag.txt\\s*$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^aws\\s+s3api\\s+head-object\\s+--bucket\\s+ctf-public-bucket\\s+--key\\s+flag.txt\\s*$"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -200,19 +221,24 @@
           "ContentLength": 19,
           "ETag": "\"3f5d8c6f9b3d2a0e7a4c6f2c1d9e1234\"",
           "ContentType": "text/plain",
-          "Metadata": { "hint": "use-stdout" }
+          "Metadata": {
+            "hint": "use-stdout"
+          }
         }
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/flag.txt\\s+-\\s*$" },
-      "requires": { "regionSet": true },
-      "response": { "text": "flag{dummy-flag-123}\n" }
+      "match": {
+        "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/flag.txt\\s+-\\s*$"
+      },
+      "response": {
+        "text": "flag{dummy-flag-123}\n"
+      }
     },
     {
-      "match": { "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/flag.txt\\s*$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-bucket/flag.txt\\s*$"
+      },
       "response": {
         "text": "usage: aws s3 cp <S3Uri> <LocalPath|-> [--recursive] [--exclude] [--include] [...]\n"
       },
@@ -222,11 +248,13 @@
         "exitCode": 255
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-backup/decoy-flag.txt\\s+-\\s*$" },
-      "requires": { "regionSet": true },
-      "response": { "text": "not_a_flag{nice-try}\n" }
+      "match": {
+        "regex": "^aws\\s+s3\\s+cp\\s+s3://ctf-public-backup/decoy-flag.txt\\s+-\\s*$"
+      },
+      "response": {
+        "text": "not_a_flag{nice-try}\n"
+      }
     }
   ],
   "fallbackError": {

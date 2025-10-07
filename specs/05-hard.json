@@ -42,7 +42,9 @@
   },
   "commands": [
     {
-      "match": { "equals": "aws sts get-caller-identity" },
+      "match": {
+        "equals": "aws sts get-caller-identity"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -52,23 +54,45 @@
         }
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$" },
-      "mutateState": [{ "op": "set", "path": "region", "value": "us-east-1" }],
-      "response": { "text": "" }
-    },
-    {
-      "match": { "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$" },
+      "match": {
+        "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$"
+      },
       "mutateState": [
-        { "op": "set", "path": "env.AWS_DEFAULT_REGION", "value": "us-east-1" },
-        { "op": "set", "path": "region", "value": "us-east-1" }
+        {
+          "op": "set",
+          "path": "region",
+          "value": "us-east-1"
+        }
       ],
-      "response": { "text": "" }
+      "response": {
+        "text": ""
+      }
     },
     {
-      "match": { "regex": "^aws\\s+iam\\s+get-user\\s*$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$"
+      },
+      "mutateState": [
+        {
+          "op": "set",
+          "path": "env.AWS_DEFAULT_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "op": "set",
+          "path": "region",
+          "value": "us-east-1"
+        }
+      ],
+      "response": {
+        "text": ""
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-user\\s*$"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -84,11 +108,12 @@
       "match": {
         "regex": "^aws\\s+iam\\s+list-user-policies\\s+--user-name\\s+userA\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
-          "PolicyNames": ["KMSDecryptNotes"]
+          "PolicyNames": [
+            "KMSDecryptNotes"
+          ]
         }
       }
     },
@@ -96,7 +121,6 @@
       "match": {
         "regex": "^aws\\s+iam\\s+get-user-policy\\s+--user-name\\s+userA\\s+--policy-name\\s+KMSDecryptNotes\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
@@ -108,10 +132,15 @@
         }
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+kms\\s+list-keys\\s*$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["kms:ListKeys"] },
+      "match": {
+        "regex": "^aws\\s+kms\\s+list-keys\\s*$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "kms:ListKeys"
+        ]
+      },
       "response": {
         "render": "json",
         "json": {
@@ -130,10 +159,13 @@
       }
     },
     {
-      "match": { "regex": "^aws\\s+kms\\s+list-aliases\\s*$" },
+      "match": {
+        "regex": "^aws\\s+kms\\s+list-aliases\\s*$"
+      },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["kms:ListAliases"]
+        "hasPoliciesAny": [
+          "kms:ListAliases"
+        ]
       },
       "response": {
         "render": "json",
@@ -158,10 +190,15 @@
         "exitCode": 255
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+kms\\s+describe-key\\s+--key-id\\s+arn:aws:kms:us-east-1:[0-9]{12}:key/[0-9a-f-]{36}\\s*$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["kms:DescribeKey"] },
+      "match": {
+        "regex": "^aws\\s+kms\\s+describe-key\\s+--key-id\\s+arn:aws:kms:us-east-1:[0-9]{12}:key/[0-9a-f-]{36}\\s*$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "kms:DescribeKey"
+        ]
+      },
       "response": {
         "render": "json",
         "json": {
@@ -182,7 +219,11 @@
       "match": {
         "regex": "^aws\\s+kms\\s+describe-key\\s+--key-id\\s+alias/prod-app-key\\s*$"
       },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["kms:DescribeKey"] },
+      "requires": {
+        "hasPoliciesAny": [
+          "kms:DescribeKey"
+        ]
+      },
       "response": {
         "render": "json",
         "json": {
@@ -199,10 +240,15 @@
         }
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+kms\\s+get-key-policy\\s+--key-id\\s+arn:aws:kms:us-east-1:[0-9]{12}:key/[0-9a-f-]{36}\\s+--policy-name\\s+default\\s*$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["kms:GetKeyPolicy"] },
+      "match": {
+        "regex": "^aws\\s+kms\\s+get-key-policy\\s+--key-id\\s+arn:aws:kms:us-east-1:[0-9]{12}:key/[0-9a-f-]{36}\\s+--policy-name\\s+default\\s*$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "kms:GetKeyPolicy"
+        ]
+      },
       "response": {
         "render": "json",
         "json": {
@@ -215,15 +261,22 @@
         "regex": "^aws\\s+kms\\s+list-resource-tags\\s+--key-id\\s+arn:aws:kms:us-east-1:[0-9]{12}:key/[0-9a-f-]{36}\\s*$"
       },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["kms:ListResourceTags"]
+        "hasPoliciesAny": [
+          "kms:ListResourceTags"
+        ]
       },
       "response": {
         "render": "json",
         "json": {
           "Tags": [
-            { "TagKey": "Environment", "TagValue": "production" },
-            { "TagKey": "Owner", "TagValue": "data-platform" }
+            {
+              "TagKey": "Environment",
+              "TagValue": "production"
+            },
+            {
+              "TagKey": "Owner",
+              "TagValue": "data-platform"
+            }
           ]
         }
       },
@@ -233,28 +286,48 @@
         "exitCode": 255
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+s3\\s+ls\\s+s3://kms-lab-bucket/?$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["s3:ListBucket"] },
+      "match": {
+        "regex": "^aws\\s+s3\\s+ls\\s+s3://kms-lab-bucket/?$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "s3:ListBucket"
+        ]
+      },
       "response": {
         "text": "2025-10-04 00:00:00         128 cipher.bin\n"
       }
     },
     {
-      "match": { "regex": "^aws\\s+s3\\s+cp\\s+s3://kms-lab-bucket/cipher\\.bin\\s+\\.\\s*$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["s3:GetObject"] },
+      "match": {
+        "regex": "^aws\\s+s3\\s+cp\\s+s3://kms-lab-bucket/cipher\\.bin\\s+\\.\\s*$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "s3:GetObject"
+        ]
+      },
       "mutateState": [
-        { "op": "set", "path": "custom.hasCipher", "value": true }
+        {
+          "op": "set",
+          "path": "custom.hasCipher",
+          "value": true
+        }
       ],
       "response": {
         "text": "download: s3://kms-lab-bucket/cipher.bin to ./cipher.bin\n"
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+kms\\s+decrypt\\s+--ciphertext-blob\\s+fileb://cipher\\.bin\\s+--key-id\\s+arn:aws:kms:us-east-1:[0-9]{12}:key/[0-9a-f-]{36}\\s*$" },
-      "requires": { "regionSet": true, "state": { "custom.hasCipher": true } },
+      "match": {
+        "regex": "^aws\\s+kms\\s+decrypt\\s+--ciphertext-blob\\s+fileb://cipher\\.bin\\s+--key-id\\s+arn:aws:kms:us-east-1:[0-9]{12}:key/[0-9a-f-]{36}\\s*$"
+      },
+      "requires": {
+        "state": {
+          "custom.hasCipher": true
+        }
+      },
       "response": {
         "render": "json",
         "json": {
@@ -263,19 +336,26 @@
         }
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+kms\\s+decrypt\\s+--ciphertext-blob\\s+fileb://cipher\\.bin\\s+--key-id\\s+arn:aws:kms:us-east-1:[0-9]{12}:key/[0-9a-f-]{36}\\s+--output\\s+text\\s+--query\\s+Plaintext\\s*$" },
-      "requires": { "regionSet": true, "state": { "custom.hasCipher": true } },
+      "match": {
+        "regex": "^aws\\s+kms\\s+decrypt\\s+--ciphertext-blob\\s+fileb://cipher\\.bin\\s+--key-id\\s+arn:aws:kms:us-east-1:[0-9]{12}:key/[0-9a-f-]{36}\\s+--output\\s+text\\s+--query\\s+Plaintext\\s*$"
+      },
+      "requires": {
+        "state": {
+          "custom.hasCipher": true
+        }
+      },
       "response": {
         "text": "ZmxhZ3trbXMtZGVjcnlwdC1wZXJtaXNzaXZlLXBvbGljeS0xMjN9\n"
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+kms\\s+decrypt\\s+--ciphertext-blob\\s+fileb://cipher\\.bin(?:\\s+.*)?$" },
-      "requires": { "regionSet": true },
-      "response": { "text": "" },
+      "match": {
+        "regex": "^aws\\s+kms\\s+decrypt\\s+--ciphertext-blob\\s+fileb://cipher\\.bin(?:\\s+.*)?$"
+      },
+      "response": {
+        "text": ""
+      },
       "errorOnFail": {
         "errorCode": "UnknownOperation",
         "message": "An error occurred (InvalidCiphertextException) when calling the Decrypt operation: Invalid Ciphertext",

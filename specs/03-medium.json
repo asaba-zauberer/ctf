@@ -39,7 +39,9 @@
   },
   "commands": [
     {
-      "match": { "equals": "aws sts get-caller-identity" },
+      "match": {
+        "equals": "aws sts get-caller-identity"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -49,23 +51,45 @@
         }
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$" },
-      "mutateState": [{ "op": "set", "path": "region", "value": "us-east-1" }],
-      "response": { "text": "" }
-    },
-    {
-      "match": { "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$" },
+      "match": {
+        "regex": "^aws\\s+configure\\s+set\\s+region\\s+us-east-1$"
+      },
       "mutateState": [
-        { "op": "set", "path": "env.AWS_DEFAULT_REGION", "value": "us-east-1" },
-        { "op": "set", "path": "region", "value": "us-east-1" }
+        {
+          "op": "set",
+          "path": "region",
+          "value": "us-east-1"
+        }
       ],
-      "response": { "text": "" }
+      "response": {
+        "text": ""
+      }
     },
     {
-      "match": { "regex": "^aws\\s+iam\\s+get-user\\s*$" },
-      "requires": { "regionSet": true },
+      "match": {
+        "regex": "^export\\s+AWS_DEFAULT_REGION=us-east-1$"
+      },
+      "mutateState": [
+        {
+          "op": "set",
+          "path": "env.AWS_DEFAULT_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "op": "set",
+          "path": "region",
+          "value": "us-east-1"
+        }
+      ],
+      "response": {
+        "text": ""
+      }
+    },
+    {
+      "match": {
+        "regex": "^aws\\s+iam\\s+get-user\\s*$"
+      },
       "response": {
         "render": "json",
         "json": {
@@ -81,11 +105,12 @@
       "match": {
         "regex": "^aws\\s+iam\\s+list-user-policies\\s+--user-name\\s+userA\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
-          "PolicyNames": ["RDSPublicSnapshotAudit"]
+          "PolicyNames": [
+            "RDSPublicSnapshotAudit"
+          ]
         }
       }
     },
@@ -93,7 +118,6 @@
       "match": {
         "regex": "^aws\\s+iam\\s+get-user-policy\\s+--user-name\\s+userA\\s+--policy-name\\s+RDSPublicSnapshotAudit\\s*$"
       },
-      "requires": { "regionSet": true },
       "response": {
         "render": "json",
         "json": {
@@ -105,10 +129,15 @@
         }
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+rds\\s+describe-db-snapshots\\s+--include-public\\s*$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["rds:DescribeDBSnapshots"] },
+      "match": {
+        "regex": "^aws\\s+rds\\s+describe-db-snapshots\\s+--include-public\\s*$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "rds:DescribeDBSnapshots"
+        ]
+      },
       "response": {
         "render": "json",
         "json": {
@@ -159,10 +188,15 @@
         "exitCode": 255
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+rds\\s+describe-db-snapshots\\s+--db-snapshot-identifier\\s+ctf-public-snap\\s*$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["rds:DescribeDBSnapshots"] },
+      "match": {
+        "regex": "^aws\\s+rds\\s+describe-db-snapshots\\s+--db-snapshot-identifier\\s+ctf-public-snap\\s*$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "rds:DescribeDBSnapshots"
+        ]
+      },
       "response": {
         "render": "json",
         "json": {
@@ -189,31 +223,56 @@
         }
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+rds\\s+list-tags-for-resource\\s+--resource-name\\s+arn:aws:rds:us-east-1:[0-9]{12}:snapshot:ctf-public-snap\\s*$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["rds:ListTagsForResource"] },
+      "match": {
+        "regex": "^aws\\s+rds\\s+list-tags-for-resource\\s+--resource-name\\s+arn:aws:rds:us-east-1:[0-9]{12}:snapshot:ctf-public-snap\\s*$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "rds:ListTagsForResource"
+        ]
+      },
       "response": {
         "render": "json",
         "json": {
           "TagList": [
-            { "Key": "Name", "Value": "public-training-snapshot" },
-            { "Key": "Environment", "Value": "demo" },
-            { "Key": "flag", "Value": "flag{rds-public-snapshot-123}" }
+            {
+              "Key": "Name",
+              "Value": "public-training-snapshot"
+            },
+            {
+              "Key": "Environment",
+              "Value": "demo"
+            },
+            {
+              "Key": "flag",
+              "Value": "flag{rds-public-snapshot-123}"
+            }
           ]
         }
       }
     },
-
     {
-      "match": { "regex": "^aws\\s+rds\\s+list-tags-for-resource\\s+--resource-name\\s+arn:aws:rds:us-east-1:[0-9]{12}:snapshot:marketing-backup-2025-10-01\\s*$" },
-      "requires": { "regionSet": true, "hasPoliciesAny": ["rds:ListTagsForResource"] },
+      "match": {
+        "regex": "^aws\\s+rds\\s+list-tags-for-resource\\s+--resource-name\\s+arn:aws:rds:us-east-1:[0-9]{12}:snapshot:marketing-backup-2025-10-01\\s*$"
+      },
+      "requires": {
+        "hasPoliciesAny": [
+          "rds:ListTagsForResource"
+        ]
+      },
       "response": {
         "render": "json",
         "json": {
           "TagList": [
-            { "Key": "Project", "Value": "marketing" },
-            { "Key": "CostCenter", "Value": "1234" }
+            {
+              "Key": "Project",
+              "Value": "marketing"
+            },
+            {
+              "Key": "CostCenter",
+              "Value": "1234"
+            }
           ]
         }
       }
@@ -223,8 +282,9 @@
         "regex": "^aws\\s+rds\\s+describe-db-snapshot-attributes\\s+--db-snapshot-identifier\\s+ctf-public-snap\\s*$"
       },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["rds:DescribeDBSnapshotAttributes"]
+        "hasPoliciesAny": [
+          "rds:DescribeDBSnapshotAttributes"
+        ]
       },
       "response": {
         "render": "json",
@@ -234,7 +294,9 @@
             "DBSnapshotAttributes": [
               {
                 "AttributeName": "restore",
-                "AttributeValues": ["all"]
+                "AttributeValues": [
+                  "all"
+                ]
               }
             ]
           }
@@ -246,8 +308,9 @@
         "regex": "^aws\\s+rds\\s+describe-db-snapshot-attributes\\s+--db-snapshot-identifier\\s+marketing-backup-2025-10-01\\s*$"
       },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["rds:DescribeDBSnapshotAttributes"]
+        "hasPoliciesAny": [
+          "rds:DescribeDBSnapshotAttributes"
+        ]
       },
       "response": {
         "render": "json",
@@ -257,7 +320,9 @@
             "DBSnapshotAttributes": [
               {
                 "AttributeName": "restore",
-                "AttributeValues": ["123456789012"]
+                "AttributeValues": [
+                  "123456789012"
+                ]
               }
             ]
           }
@@ -269,8 +334,9 @@
         "regex": "^aws\\s+ec2\\s+describe-security-groups\\s+--group-ids\\s+sg-0a1b2c3d4e5f67890\\s*$"
       },
       "requires": {
-        "regionSet": true,
-        "hasPoliciesAny": ["ec2:DescribeSecurityGroups"]
+        "hasPoliciesAny": [
+          "ec2:DescribeSecurityGroups"
+        ]
       },
       "response": {
         "render": "json",
@@ -306,8 +372,14 @@
                 }
               ],
               "Tags": [
-                { "Key": "Environment", "Value": "demo" },
-                { "Key": "Purpose", "Value": "snapshot-audit" }
+                {
+                  "Key": "Environment",
+                  "Value": "demo"
+                },
+                {
+                  "Key": "Purpose",
+                  "Value": "snapshot-audit"
+                }
               ]
             }
           ]

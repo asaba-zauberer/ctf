@@ -6,6 +6,8 @@ import re
 from pathlib import Path
 from typing import Optional
 
+from logging import NullHandler
+
 FLAG_PATTERN = re.compile(r"flag\{[^}]*\}", re.IGNORECASE)
 
 
@@ -15,13 +17,17 @@ def mask_sensitive(value: Optional[str]) -> Optional[str]:
     return FLAG_PATTERN.sub("flag{***}", value)
 
 
-def configure_logging(log_dir: Path) -> logging.Logger:
-    log_dir.mkdir(parents=True, exist_ok=True)
-    log_path = log_dir / "app.log"
-
+def configure_logging(log_dir: Path, enable: bool = True) -> logging.Logger:
     logger = logging.getLogger("ctf_app")
     if logger.handlers:
         return logger
+
+    if not enable:
+        logger.addHandler(NullHandler())
+        return logger
+
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / "app.log"
 
     logger.setLevel(logging.INFO)
     handler = logging.FileHandler(log_path, encoding="utf-8")
