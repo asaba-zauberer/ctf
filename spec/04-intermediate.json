@@ -1,0 +1,498 @@
+[
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "Use 'aws <service> <operation> --help' to get service-specific help.\nAvailable services in this lab: sts, iam, kms, s3, s3api."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+sts\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws sts help\n\nAvailable operations:\n  get-caller-identity    Return details about the IAM caller.\n  assume-role            Request temporary credentials for a role.\n  decode-authorization-message  (not implemented in this lab)\n\nExamples:\n  aws sts get-caller-identity"
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws iam help\n\nAvailable operations:\n  get-user                         Describe an IAM user.\n  list-attached-user-policies      List managed policies attached to a user.\n  list-user-policies               List inline policy names for a user.\n  get-user-policy                  Retrieve a specific inline policy document.\n\nUse '--help' with each operation for syntax."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+kms\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws kms help\n\nAvailable commands:\n  list-keys       List KMS customer managed keys.\n  describe-key    Show detailed metadata for a key.\n  get-key-policy  Retrieve the key policy document.\n  decrypt         Decrypt ciphertext using a KMS key.\n\nExamples:\n  aws kms list-keys\n  aws kms decrypt --ciphertext-blob <BASE64> --query Plaintext --output text | base64 -d"
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+s3\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws s3 help\n\nAvailable commands:\n  ls    List buckets or bucket contents.\n  cp    Copy objects between S3 and local paths.\n\nExamples:\n  aws s3 ls\n  aws s3 cp s3://archive-bucket/encrypted-flag.bin --version-id <id> -"
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+s3api\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws s3api help\n\nAvailable commands:\n  list-object-versions    List versions of objects in a bucket.\n\nExample:\n  aws s3api list-object-versions --bucket archive-bucket --prefix encrypted-flag.bin"
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-user\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam get-user [--user-name <name>]\nDescribe the specified IAM user or the caller when omitted."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-attached-user-policies\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam list-attached-user-policies --user-name <name>\nList the managed policies attached to the given user."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-user-policies\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam list-user-policies --user-name <name>\nList inline policy names embedded in the user."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-user-policy\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam get-user-policy --user-name <name> --policy-name <policy>\nRetrieve the specified inline policy document."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+kms\\s+list-keys\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws kms list-keys [--limit <value>]\nList the customer managed keys in the account."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+kms\\s+decrypt\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws kms decrypt --ciphertext-blob <Base64> [--key-id <key>] [--query Plaintext --output text]\nDecrypt a Base64 encoded ciphertext value.\nExample:\n  aws kms decrypt --ciphertext-blob <BASE64> --query Plaintext --output text | base64 -d"
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+s3api\\s+list-object-versions\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws s3api list-object-versions --bucket <bucket> [--prefix <prefix>]\nList object versions, including noncurrent versions."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+s3\\s+cp\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws s3 cp <source> <destination> [--version-id <id>]\nUse '-' as destination to stream to stdout."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws sts get-caller-identity"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserId": "AIDA04CTFEXAMPLEID012",
+        "Account": "123456789012",
+        "Arn": "arn:aws:iam::123456789012:user/04-rotation-maintainer"
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws iam get-user"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "User": {
+          "UserName": "04-rotation-maintainer",
+          "Arn": "arn:aws:iam::123456789012:user/04-rotation-maintainer",
+          "CreateDate": "2025-10-05T10:24:18Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws iam get-user --user-name 04-rotation-maintainer"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "User": {
+          "UserName": "04-rotation-maintainer",
+          "Arn": "arn:aws:iam::123456789012:user/04-rotation-maintainer",
+          "CreateDate": "2025-10-05T10:24:18Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws iam list-attached-user-policies --user-name 04-rotation-maintainer"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "AttachedPolicies": [
+          {
+            "PolicyName": "AmazonEC2ReadOnlyAccess",
+            "PolicyArn": "arn:aws:iam::123456789012:policy/AmazonEC2ReadOnlyAccess"
+          },
+          {
+            "PolicyName": "KmsS3ReadTrainingPolicy",
+            "PolicyArn": "arn:aws:iam::123456789012:policy/KmsS3ReadTrainingPolicy"
+          }
+        ],
+        "IsTruncated": false
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws iam list-attached-user-policies"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"UserName\""
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws iam list-user-policies --user-name 04-rotation-maintainer"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "PolicyNames": [
+          "InlineKmsS3TrainingPolicy"
+        ],
+        "IsTruncated": false
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws iam get-user-policy --user-name 04-rotation-maintainer --policy-name InlineKmsS3TrainingPolicy"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserName": "04-rotation-maintainer",
+        "PolicyName": "InlineKmsS3TrainingPolicy",
+        "PolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%5B%22sts%3AGetCallerIdentity%22%2C%22iam%3AGetUser%22%2C%22iam%3AListAttachedUserPolicies%22%2C%22iam%3AListUserPolicies%22%2C%22iam%3AGetUserPolicy%22%2C%22kms%3AListKeys%22%2C%22kms%3ADescribeKey%22%2C%22kms%3AGetKeyPolicy%22%2C%22kms%3ADecrypt%22%2C%22s3%3AListAllMyBuckets%22%2C%22s3%3AListBucket%22%2C%22s3%3AListBucketVersions%22%5D%2C%22Resource%22%3A%22%2A%22%7D%2C%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%22s3%3AGetObjectVersion%22%2C%22Resource%22%3A%22arn%3Aaws%3As3%3A%3A%3Aarchive-bucket/encrypted-flag.bin%22%7D%2C%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%22kms%3ADecrypt%22%2C%22Resource%22%3A%22arn%3Aaws%3Akms%3Aus-east-1%3A123456789012%3Akey/1234abcd-12ab-34cd-56ef-1234567890ab%22%7D%5D%7D"
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws kms list-keys"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Keys": [
+          {
+            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyArn": "arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws kms describe-key --key-id 1234abcd-12ab-34cd-56ef-1234567890ab"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "KeyMetadata": {
+          "AWSAccountId": "123456789012",
+          "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+          "Arn": "arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+          "CreationDate": "2025-10-07T12:11:05Z",
+          "Enabled": true,
+          "KeyState": "Enabled",
+          "Description": "Archive bucket decrypt key"
+        }
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws kms describe-key --key-id arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "KeyMetadata": {
+          "AWSAccountId": "123456789012",
+          "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+          "Arn": "arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+          "CreationDate": "2025-10-07T12:11:05Z",
+          "Enabled": true,
+          "KeyState": "Enabled",
+          "Description": "Archive bucket decrypt key"
+        }
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws kms get-key-policy --key-id 1234abcd-12ab-34cd-56ef-1234567890ab --policy-name default"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"AllowAllDecrypt\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"kms:Decrypt\",\"kms:DescribeKey\"],\"Resource\":\"*\"}]}"
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws kms get-key-policy --key-id arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab --policy-name default"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"AllowAllDecrypt\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"kms:Decrypt\",\"kms:DescribeKey\"],\"Resource\":\"*\"}]}"
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws kms decrypt --key-id arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab --ciphertext-blob RW5jcnlwdGVkRGF0YVBsYWNlaG9sZGVyRm9yS01TRGVtbw=="
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "KeyId": "arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+        "Plaintext": "RkxBR3tGTEFHLTA0LUtNUy1ERVNDUllQfQ=="
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws kms decrypt --key-id arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"CiphertextBlob\""
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws s3 ls"
+    },
+    "response": {
+      "text": "2025-10-04 08:25:03 archive-bucket"
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws s3 ls s3://archive-bucket"
+    },
+    "response": {
+      "text": "2025-10-09 13:11:44         42 note.txt"
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws s3api list-object-versions --bucket archive-bucket --prefix encrypted-flag.bin"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Versions": [
+          {
+            "ETag": "\"d41d8cd98f00b204e9800998ecf8427e\"",
+            "Size": 128,
+            "StorageClass": "STANDARD",
+            "Key": "encrypted-flag.bin",
+            "VersionId": "3HL4kQtY7B9N1exampleV2id",
+            "IsLatest": true,
+            "LastModified": "2025-10-10T11:22:33Z"
+          },
+          {
+            "ETag": "\"b1946ac92492d2347c6235b4d2611184\"",
+            "Size": 64,
+            "StorageClass": "STANDARD",
+            "Key": "encrypted-flag.bin",
+            "VersionId": "a1B2C3d4E5F6exampleV1id",
+            "IsLatest": false,
+            "LastModified": "2025-10-05T09:08:07Z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws s3 cp s3://archive-bucket/encrypted-flag.bin --version-id 3HL4kQtY7B9N1exampleV2id -"
+    },
+    "response": {
+      "text": "U29mdC1kZWxheWVkIGNvcHkgb24gTW9uZGF5IChub3QgcmVsZXZhbnQp"
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws s3 cp s3://archive-bucket/encrypted-flag.bin --version-id a1B2C3d4E5F6exampleV1id -"
+    },
+    "response": {
+      "text": "RW5jcnlwdGVkRGF0YVBsYWNlaG9sZGVyRm9yS01TRGVtbw=="
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws s3 cp s3://archive-bucket/encrypted-flag.bin -"
+    },
+    "response": {
+      "text": "usage: aws s3 cp <S3Uri> <LocalPath|-> [--options...]\nerror: the following arguments are required: DEST"
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws s3 cp s3://archive-bucket/missing.bin --version-id v1 -"
+    },
+    "response": {
+      "text": "An error occurred (NoSuchKey) when calling the GetObject operation: The specified key does not exist."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+kms\\s+(?!list-keys\\b|describe-key\\b|get-key-policy\\b|decrypt\\b).+"
+    },
+    "response": {
+      "text": "aws kms: Invalid choice. Valid commands in this lab are list-keys, describe-key, get-key-policy, decrypt."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+s3\\s+(?!ls\\b|cp\\b).+"
+    },
+    "response": {
+      "text": "usage: aws s3 [ls|cp] <parameters>\nInvalid choice, available commands are ls, cp."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+s3api\\s+(?!list-object-versions\\b).+"
+    },
+    "response": {
+      "text": "aws s3api: Invalid choice. Valid command in this lab is list-object-versions."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+(?!get-user\\b|list-attached-user-policies\\b|list-user-policies\\b|get-user-policy\\b).+"
+    },
+    "response": {
+      "text": "aws iam: Invalid choice. Valid operations in this lab are get-user, list-attached-user-policies, list-user-policies, get-user-policy."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+sts\\s+(?!get-caller-identity\\b).+"
+    },
+    "response": {
+      "text": "aws sts: Invalid choice. Available operation is get-caller-identity."
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+(?!(?:sts|iam|kms|s3|s3api)\\b).+"
+    },
+    "response": {
+      "text": "aws: error: argument command: Invalid choice, valid choices are: sts, iam, kms, s3, s3api"
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "regex": "^aws\\s+(?:sts|iam|kms|s3|s3api)\\s+.*--[A-Za-z0-9-]+.*$"
+    },
+    "response": {
+      "text": "Unknown options: --xxxxx"
+    }
+  },
+  {
+    "role": "04-rotation-maintainer",
+    "request": {
+      "equals": "aws kms decrypt --ciphertext-blob RW5jcnlwdGVkRGF0YVBsYWNlaG9sZGVyRm9yS01TRGVtbw=="
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "KeyId": "arn:aws:kms:us-east-1:123456789012:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+        "Plaintext": "RkxBR3tGTEFHLTA0LUtNUy1ERVNDUllQfQ=="
+      }
+    }
+  }
+]

@@ -1,9 +1,0 @@
-version: '3.9'
-services:
-  web:
-    build: .
-    ports:
-      - "10000:9999"
-    environment:
-      - PYTHONUNBUFFERED=1
-    restart: unless-stopped

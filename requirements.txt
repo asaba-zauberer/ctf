@@ -1,5 +1,0 @@
-Flask==3.0.2
-gunicorn==21.2.0
-itsdangerous==2.1.2
-Werkzeug==3.0.1
-pytest==8.0.0

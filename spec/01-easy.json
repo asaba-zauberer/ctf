@@ -1,0 +1,320 @@
+[
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "AWS Command Line Interface, version 2 (training)\n\nSYNOPSIS:\n  aws <service> <operation> [parameters] [--help]\n\nCommon options:\n  --profile <name>    Use a named profile from credentials.\n  --region <region>   Override the default region.\n\nUse 'aws <service> --help' to view service-specific help.\nAvailable services in this lab: sts, iam, s3."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+sts\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws sts help\n\nAvailable operations:\n  get-caller-identity    Return details about the IAM user or role whose credentials are used to call the operation.\n\nExample:\n  aws sts get-caller-identity"
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws iam help\n\nAvailable operations:\n  get-user                         Describe an IAM user.\n  list-attached-user-policies      List managed policies attached to a user.\n  list-user-policies               List inline policy names for a user.\n  get-user-policy                  Retrieve a specific inline policy document.\n\nUse --user-name where required."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+s3\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws s3 help\n\nAvailable commands:\n  ls    List buckets or bucket contents.\n  cp    Copy objects between S3 and local paths.\n\nUse 'aws s3 <command> --help' for details."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+s3\\s+ls\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws s3 ls [s3://bucket[/prefix]]\nList buckets or the contents of a bucket."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+s3\\s+cp\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws s3 cp <source> <destination> [--recursive]\nUse '-' as destination to stream to stdout when copying from S3."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-user\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam get-user --user-name <name>\nDescribe the specified IAM user."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-attached-user-policies\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam list-attached-user-policies --user-name <name>\nList the managed policies attached to the user."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-user-policies\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam list-user-policies --user-name <name>\nList inline policy names that are embedded in the user."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-user-policy\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam get-user-policy --user-name <name> --policy-name <policy>\nRetrieve the specified inline policy document."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+sts\\s+get-caller-identity\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws sts get-caller-identity\nReturn details about the current caller."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws sts get-caller-identity"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserId": "AKIA01CTF2H8Q9M5L7Z3",
+        "Account": "123456789012",
+        "Arn": "arn:aws:iam::123456789012:user/01-developer"
+      }
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws iam get-user --user-name 01-developer"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "User": {
+          "UserName": "01-developer",
+          "Arn": "arn:aws:iam::123456789012:user/01-developer",
+          "CreateDate": "2025-10-05T10:34:12Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws iam get-user"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "User": {
+          "UserName": "01-developer",
+          "Arn": "arn:aws:iam::123456789012:user/01-developer",
+          "CreateDate": "2025-10-05T10:34:12Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws iam list-attached-user-policies --user-name 01-developer"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "AttachedPolicies": [
+          {
+            "PolicyName": "AmazonS3ReadOnlyAccess",
+            "PolicyArn": "arn:aws:iam::123456789012:policy/AmazonS3ReadOnlyAccess"
+          }
+        ],
+        "IsTruncated": false
+      }
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws iam list-attached-user-policies"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"UserName\""
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws iam list-user-policies --user-name 01-developer"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "PolicyNames": [
+          "InlineMinimalTrainingPolicy"
+        ],
+        "IsTruncated": false
+      }
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws iam get-user-policy --user-name 01-developer --policy-name InlineMinimalTrainingPolicy"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserName": "01-developer",
+        "PolicyName": "InlineMinimalTrainingPolicy",
+        "PolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%5B%22sts%3AGetCallerIdentity%22%2C%22iam%3AGetUser%22%2C%22iam%3AListAttachedUserPolicies%22%2C%22iam%3AListUserPolicies%22%2C%22iam%3AGetUserPolicy%22%2C%22s3%3AListAllMyBuckets%22%5D%2C%22Resource%22%3A%22%2A%22%7D%2C%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%22s3%3AListBucket%22%2C%22Resource%22%3A%5B%22arn%3Aaws%3As3%3A%3A%3Apublic-bucket%22%2C%22arn%3Aaws%3As3%3A%3A%3Asecret-bucket%22%5D%7D%2C%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%22s3%3AGetObject%22%2C%22Resource%22%3A%5B%22arn%3Aaws%3As3%3A%3A%3Apublic-bucket/readme.txt%22%2C%22arn%3Aaws%3As3%3A%3A%3Asecret-bucket/flag.txt%22%5D%7D%5D%7D"
+      }
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws s3 ls"
+    },
+    "response": {
+      "text": "2025-10-03 09:45:12 public-bucket\n2025-10-11 16:22:49 secret-bucket"
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws s3 ls s3://public-bucket"
+    },
+    "response": {
+      "text": "2025-10-06 10:42:17          58 readme.txt"
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws s3 ls s3://secret-bucket"
+    },
+    "response": {
+      "text": "2025-10-10 09:12:05          18 flag.txt"
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws s3 cp s3://public-bucket/readme.txt -"
+    },
+    "response": {
+      "text": "Welcome to the training. Use 'aws iam' to explore your permissions."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws s3 cp s3://secret-bucket/flag.txt -"
+    },
+    "response": {
+      "text": "FLAG{FLAG-01-EASY}"
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws s3 cp s3://public-bucket/readme.txt"
+    },
+    "response": {
+      "text": "usage: aws s3 cp <S3Uri> <LocalPath|-> [--options...]\nerror: the following arguments are required: DEST"
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws s3 cp s3://public-bucket/unknown.txt -"
+    },
+    "response": {
+      "text": "An error occurred (NoSuchKey) when calling the GetObject operation: The specified key does not exist."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "equals": "aws s3 ls s3://unknown-bucket"
+    },
+    "response": {
+      "text": "An error occurred (NoSuchBucket) when calling the ListObjectsV2 operation: The specified bucket does not exist"
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+s3\\s+(?!ls\\b|cp\\b).+"
+    },
+    "response": {
+      "text": "usage: aws s3 [ls|cp] <parameters>\nInvalid choice, available commands are ls, cp."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+s3\\s+(?:ls|cp).*--[A-Za-z0-9-]+"
+    },
+    "response": {
+      "text": "unknown option provided. Refer to 'aws s3 <command> --help'."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+iam\\s+(?!get-user\\b|list-attached-user-policies\\b|list-user-policies\\b|get-user-policy\\b).+"
+    },
+    "response": {
+      "text": "aws iam: Invalid choice. Valid operations in this lab are get-user, list-attached-user-policies, list-user-policies, get-user-policy."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+sts\\s+(?!get-caller-identity\\b).+"
+    },
+    "response": {
+      "text": "aws sts: Invalid choice. Available operation is get-caller-identity."
+    }
+  },
+  {
+    "role": "01-developer",
+    "request": {
+      "regex": "^aws\\s+(?!(?:sts|iam|s3)\\b).+"
+    },
+    "response": {
+      "text": "aws: error: argument command: Invalid choice, valid choices are: sts, iam, s3"
+    }
+  }
+]

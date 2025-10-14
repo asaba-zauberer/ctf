@@ -1,8 +1,0 @@
-# Ops notes (internal)
-# Values may be masked in prod.
-
-SERVICE=orders
-RUNTIME=containers/ecs
-AWS_EXECUTION_ENV=AWS_ECS_FARGATE
-AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=/v2/credentials/2ff1c6a2-7a46-4d8d-9e59-1a2b3c4d5e6f
-# TODO: rotate relative URI daily

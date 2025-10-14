@@ -1,0 +1,584 @@
+[
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "Use 'aws <service> <operation> --help' to get service-specific help.\nAvailable services in this lab: sts, iam, s3, sqs.\nTry 'aws sqs --help' to view available queue commands."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+sts\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws sts help\n\nAvailable operations:\n  get-caller-identity    Return details about the IAM caller.\n\nExample:\n  aws sts get-caller-identity"
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+iam\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws iam help\n\nAvailable operations:\n  get-user                         Describe an IAM user.\n  list-attached-user-policies      List managed policies attached to a user.\n  list-user-policies               List inline policy names for a user.\n  get-user-policy                  Retrieve a specific inline policy document.\n\nUse --user-name where required."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+s3\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws s3 help\n\nAvailable commands:\n  ls    List buckets or bucket contents.\n  cp    Copy objects between S3 and local paths.\n\nUse 'aws s3 <command> --help' for details."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+s3\\s+ls\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws s3 ls [s3://bucket[/prefix]]\nList buckets or the contents of a bucket."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+s3\\s+cp\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws s3 cp <source> <destination> [--recursive]\nUse '-' as destination to stream to stdout when copying from S3."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+sts\\s+get-caller-identity\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws sts get-caller-identity\nReturn details about the current caller."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-user\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam get-user [--user-name <name>]\nDescribe the specified IAM user or the current caller when omitted."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-attached-user-policies\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam list-attached-user-policies --user-name <name>\nList the managed policies attached to the user."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-user-policies\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam list-user-policies --user-name <name>\nList inline policy names that are embedded in the user."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-user-policy\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam get-user-policy --user-name <name> --policy-name <policy>\nRetrieve the specified inline policy document."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+sqs\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws sqs help\n\nSYNOPSIS:\n  aws sqs <command> [parameters]\n\nAvailable commands:\n  list-queues          List queue URLs in the account.\n  get-queue-url        Resolve the URL for a queue name.\n  get-queue-attributes Inspect queue attributes such as ApproximateNumberOfMessages.\n  receive-message      Pull messages from the queue.\n\nExamples:\n  aws sqs list-queues --queue-name-prefix public-\n  aws sqs get-queue-url --queue-name public-flags-queue\n  aws sqs get-queue-attributes --queue-url <url> --attribute-names All\n  aws sqs receive-message --queue-url <url> --max-number-of-messages 1 --wait-time-seconds 0\n"
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+sqs\\s+list-queues\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws sqs list-queues [--queue-name-prefix <prefix>]\nList the queue URLs for this account and region."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+sqs\\s+get-queue-url\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws sqs get-queue-url --queue-name <name>\nReturn the queue URL for the specified queue name."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+sqs\\s+get-queue-attributes\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws sqs get-queue-attributes --queue-url <url> --attribute-names <names>\nRetrieve queue metadata such as CreatedTimestamp or Policy."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+sqs\\s+receive-message\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws sqs receive-message --queue-url <url> [--max-number-of-messages 1] [--wait-time-seconds 0]\nReceive up to one message from the specified queue."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sts get-caller-identity"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserId": "AKIA02CTF7N4L2Q8R5D6",
+        "Account": "123456789012",
+        "Arn": "arn:aws:iam::123456789012:user/02-ec2-operator"
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws iam get-user --user-name 02-ec2-operator"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "User": {
+          "UserName": "02-ec2-operator",
+          "Arn": "arn:aws:iam::123456789012:user/02-ec2-operator",
+          "CreateDate": "2025-10-08T11:22:33Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws iam get-user"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "User": {
+          "UserName": "02-ec2-operator",
+          "Arn": "arn:aws:iam::123456789012:user/02-ec2-operator",
+          "CreateDate": "2025-10-08T11:22:33Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws iam list-attached-user-policies --user-name 02-ec2-operator"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "AttachedPolicies": [
+          {
+            "PolicyName": "AmazonEC2ReadOnlyAccess",
+            "PolicyArn": "arn:aws:iam::123456789012:policy/AmazonEC2ReadOnlyAccess"
+          },
+          {
+            "PolicyName": "AmazonSQSReadOnlyAccess",
+            "PolicyArn": "arn:aws:iam::123456789012:policy/AmazonSQSReadOnlyAccess"
+          }
+        ],
+        "IsTruncated": false
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws iam list-attached-user-policies"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"UserName\""
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws iam list-user-policies --user-name 02-ec2-operator"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "PolicyNames": [
+          "InlineMinimalSqsTrainingPolicy"
+        ],
+        "IsTruncated": false
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws iam get-user-policy --user-name 02-ec2-operator --policy-name InlineMinimalSqsTrainingPolicy"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserName": "02-ec2-operator",
+        "PolicyName": "InlineMinimalSqsTrainingPolicy",
+        "PolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%5B%22sts%3AGetCallerIdentity%22%2C%22iam%3AGetUser%22%2C%22iam%3AListAttachedUserPolicies%22%2C%22iam%3AListUserPolicies%22%2C%22iam%3AGetUserPolicy%22%5D%2C%22Resource%22%3A%22%2A%22%7D%2C%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%5B%22sqs%3AListQueues%22%2C%22sqs%3AGetQueueUrl%22%2C%22sqs%3AGetQueueAttributes%22%2C%22sqs%3AReceiveMessage%22%5D%2C%22Resource%22%3A%22%2A%22%7D%5D%7D"
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs list-queues"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "QueueUrls": [
+          "https://sqs.us-east-1.amazonaws.com/123456789012/public-orders-queue",
+          "https://sqs.us-east-1.amazonaws.com/123456789012/public-logs-queue",
+          "https://sqs.us-east-1.amazonaws.com/123456789012/public-flags-queue"
+        ],
+        "_comment": "Pagination omitted; extend with NextToken when queue count exceeds one page."
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs list-queues --queue-name-prefix public-"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "QueueUrls": [
+          "https://sqs.us-east-1.amazonaws.com/123456789012/public-orders-queue",
+          "https://sqs.us-east-1.amazonaws.com/123456789012/public-logs-queue",
+          "https://sqs.us-east-1.amazonaws.com/123456789012/public-flags-queue"
+        ],
+        "_comment": "Pagination omitted; extend with NextToken when queue count exceeds one page."
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs get-queue-url --queue-name public-orders-queue"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "QueueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/public-orders-queue"
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs get-queue-url --queue-name public-logs-queue"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "QueueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/public-logs-queue"
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs get-queue-url --queue-name public-flags-queue"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "QueueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/public-flags-queue"
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs get-queue-url"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"QueueName\""
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs get-queue-url --queue-name unknown-queue"
+    },
+    "response": {
+      "text": "An error occurred (AWS.SimpleQueueService.NonExistentQueue) when calling the GetQueueUrl operation: The specified queue does not exist for this wsdl version."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs get-queue-attributes --queue-url https://sqs.us-east-1.amazonaws.com/123456789012/public-orders-queue --attribute-names All"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Attributes": {
+          "QueueArn": "arn:aws:sqs:us-east-1:123456789012:public-orders-queue",
+          "CreatedTimestamp": "1759483800",
+          "LastModifiedTimestamp": "1759661112",
+          "ApproximateNumberOfMessages": "3",
+          "ApproximateNumberOfMessagesNotVisible": "0",
+          "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicRead\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"sqs:GetQueueUrl\",\"sqs:GetQueueAttributes\",\"sqs:ReceiveMessage\"],\"Resource\":\"arn:aws:sqs:us-east-1:123456789012:public-orders-queue\"}]}"
+        }
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs get-queue-attributes --queue-url https://sqs.us-east-1.amazonaws.com/123456789012/public-logs-queue --attribute-names All"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Attributes": {
+          "QueueArn": "arn:aws:sqs:us-east-1:123456789012:public-logs-queue",
+          "CreatedTimestamp": "1759752333",
+          "LastModifiedTimestamp": "1759998161",
+          "ApproximateNumberOfMessages": "0",
+          "ApproximateNumberOfMessagesNotVisible": "0",
+          "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicRead\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"sqs:GetQueueUrl\",\"sqs:GetQueueAttributes\",\"sqs:ReceiveMessage\"],\"Resource\":\"arn:aws:sqs:us-east-1:123456789012:public-logs-queue\"}]}"
+        }
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs get-queue-attributes --queue-url https://sqs.us-east-1.amazonaws.com/123456789012/public-flags-queue --attribute-names All"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Attributes": {
+          "QueueArn": "arn:aws:sqs:us-east-1:123456789012:public-flags-queue",
+          "CreatedTimestamp": "1759846707",
+          "LastModifiedTimestamp": "1760169305",
+          "ApproximateNumberOfMessages": "1",
+          "ApproximateNumberOfMessagesNotVisible": "0",
+          "Policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"PublicRead\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"sqs:GetQueueUrl\",\"sqs:GetQueueAttributes\",\"sqs:ReceiveMessage\"],\"Resource\":\"arn:aws:sqs:us-east-1:123456789012:public-flags-queue\"}]}"
+        }
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs get-queue-attributes --queue-url https://sqs.us-east-1.amazonaws.com/123456789012/public-orders-queue"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"AttributeNames\""
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs get-queue-attributes"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"QueueUrl\""
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs get-queue-attributes --attribute-names All"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"QueueUrl\""
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/123456789012/public-orders-queue --max-number-of-messages 1"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Messages": [
+          {
+            "MessageId": "4f5d8d7a-1111-4f22-8a66-1111d7a4f5d8",
+            "ReceiptHandle": "AQEBordersExampleReceiptHandle==",
+            "MD5OfBody": "a45f29c503c89e4234f281ab9d30fb53",
+            "Body": "Processing orders...",
+            "Attributes": {
+              "SentTimestamp": "1759572000000"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/123456789012/public-logs-queue --max-number-of-messages 1"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Messages": [
+          {
+            "MessageId": "b2c1e4f9-2222-4d55-b6aa-2222c1e4f9b2",
+            "ReceiptHandle": "AQEBlogsExampleReceiptHandle==",
+            "MD5OfBody": "5b5cf9f1329976b364589d980b78d0c9",
+            "Body": "Recent logs archived.",
+            "Attributes": {
+              "SentTimestamp": "1759921871000"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/123456789012/public-flags-queue --max-number-of-messages 1"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Messages": [
+          {
+            "MessageId": "c3d4e5f6-3333-4aa7-c8bb-3333d4e5f6c3",
+            "ReceiptHandle": "AQEBflagsExampleReceiptHandle==",
+            "MD5OfBody": "da9fbf25f948371fd30b39dc36da43e1",
+            "Body": "FLAG{FLAG-02-EASY}",
+            "Attributes": {
+              "SentTimestamp": "1760169330000"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/123456789012/public-flags-queue"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Messages": [
+          {
+            "MessageId": "c3d4e5f6-3333-4aa7-c8bb-3333d4e5f6c3",
+            "ReceiptHandle": "AQEBflagsExampleReceiptHandle==",
+            "MD5OfBody": "da9fbf25f948371fd30b39dc36da43e1",
+            "Body": "FLAG{FLAG-02-EASY}",
+            "Attributes": {
+              "SentTimestamp": "1760169330000"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs receive-message"
+    },
+    "response": {
+      "text": "An error occurred (MissingParameter) when calling the ReceiveMessage operation: The request must contain the parameter QueueUrl."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "equals": "aws sqs receive-message --queue-url https://sqs.us-east-1.amazonaws.com/123456789012/unknown-queue"
+    },
+    "response": {
+      "text": "An error occurred (AWS.SimpleQueueService.NonExistentQueue) when calling the ReceiveMessage operation: The specified queue does not exist for this wsdl version."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+sqs\\s+(?!list-queues\\b|get-queue-url\\b|get-queue-attributes\\b|receive-message\\b).+"
+    },
+    "response": {
+      "text": "usage: aws sqs [list-queues|get-queue-url|get-queue-attributes|receive-message] <parameters>\nInvalid choice, available commands are list-queues, get-queue-url, get-queue-attributes, receive-message."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+sqs\\s+(?:list-queues|get-queue-url|get-queue-attributes|receive-message).*--[A-Za-z0-9-]+"
+    },
+    "response": {
+      "text": "Unknown options: --xxxxx"
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+iam\\s+(?!get-user\\b|list-attached-user-policies\\b|list-user-policies\\b|get-user-policy\\b).+"
+    },
+    "response": {
+      "text": "aws iam: Invalid choice. Valid operations in this lab are get-user, list-attached-user-policies, list-user-policies, get-user-policy."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+sts\\s+(?!get-caller-identity\\b).+"
+    },
+    "response": {
+      "text": "aws sts: Invalid choice. Available operation is get-caller-identity."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+s3\\s+(?!ls\\b|cp\\b).+"
+    },
+    "response": {
+      "text": "usage: aws s3 [ls|cp] <parameters>\nInvalid choice, available commands are ls, cp."
+    }
+  },
+  {
+    "role": "02-ec2-operator",
+    "request": {
+      "regex": "^aws\\s+(?!(?:sts|iam|s3|sqs)\\b).+"
+    },
+    "response": {
+      "text": "aws: error: argument command: Invalid choice, valid choices are: sts, iam, s3, sqs"
+    }
+  }
+]

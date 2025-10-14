@@ -1,0 +1,406 @@
+[
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+lambda\\s+update-function-configuration\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws lambda update-function-configuration --function-name <name> [--role <arn>] [--environment <json>] ...\nTo change the execution role you need lambda:UpdateFunctionConfiguration, iam:PassRole on the target role ARN, and the role trust policy must allow lambda.amazonaws.com."
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+iam\\s+simulate-principal-policy\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam simulate-principal-policy --policy-source-arn <principal> --action-names <actions> --resource-arns <arns>\nEvaluate whether a principal (such as 05-ci-operator) can perform actions like iam:PassRole on a specific role.\nExample:\n  aws iam simulate-principal-policy --policy-source-arn arn:aws:iam::123456789012:user/05-ci-operator --action-names iam:PassRole --resource-arns arn:aws:iam::123456789012:role/service-role/ci-exec-admin"
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "Use 'aws <service> <operation> --help' to get service-specific help.\nAvailable services in this lab: sts, iam, lambda, secretsmanager."
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+sts\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws sts help\n\nAvailable operations:\n  get-caller-identity    Return details about the IAM caller.\n\nExample:\n  aws sts get-caller-identity"
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+iam\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws iam help\n\nAvailable operations:\n  get-user                         Describe an IAM user.\n  list-roles                       List IAM roles.\n  get-role                         Retrieve details for a role.\n  list-attached-role-policies      List managed policies attached to a role.\n  simulate-principal-policy        Evaluate permissions for a principal.\n  list-attached-user-policies      List managed policies attached to a user.\n  list-user-policies               List inline policy names for a user.\n  get-user-policy                  Retrieve a specific inline policy document.\n\nPassRole requirements: the caller must have iam:PassRole on the target role ARN, lambda:UpdateFunctionConfiguration for the function, and the target role's trust policy must allow lambda.amazonaws.com.\nUse '--help' on any operation for syntax."
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+lambda\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws lambda help\n\nAvailable commands:\n  list-functions                 List Lambda functions.\n  get-function-configuration     Show current configuration for a function.\n  update-function-configuration  Update configuration such as the execution role.\n  update-function-code           Update the deployment package for a function.\n  invoke                         Invoke a Lambda function.\n\nExamples:\n  aws lambda list-functions\n  aws lambda update-function-configuration --function-name ci-build-step --role arn:aws:iam::123456789012:role/service-role/ci-exec-admin\n  aws lambda invoke --function-name ci-build-step --payload '{\"action\":\"dump_secret\",\"name\":\"training/flag-05\"}' --cli-binary-format raw-in-base64-out /dev/stdout"
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+secretsmanager\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws secretsmanager help\n\nAvailable commands:\n  get-secret-value    Retrieve the encrypted secret value.\n\nNote: The current user lacks secretsmanager:GetSecretValue permissions; escalate via Lambda running with a role such as ci-exec-admin (which also has kms:Decrypt)."
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws sts get-caller-identity"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserId": "AIDA05CTFEXAMPLEID456",
+        "Account": "123456789012",
+        "Arn": "arn:aws:iam::123456789012:user/05-ci-operator"
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws iam get-user"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "User": {
+          "UserName": "05-ci-operator",
+          "Arn": "arn:aws:iam::123456789012:user/05-ci-operator",
+          "CreateDate": "2025-10-04T09:42:11Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws iam get-user --user-name 05-ci-operator"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "User": {
+          "UserName": "05-ci-operator",
+          "Arn": "arn:aws:iam::123456789012:user/05-ci-operator",
+          "CreateDate": "2025-10-04T09:42:11Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws iam list-roles"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Roles": [
+          {
+            "Path": "/service-role/",
+            "RoleName": "ci-build-exec",
+            "RoleId": "RABCDEFGHIJKLMN1",
+            "Arn": "arn:aws:iam::123456789012:role/service-role/ci-build-exec",
+            "CreateDate": "2025-10-05T07:23:18Z",
+            "AssumeRolePolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Principal%22%3A%7B%22Service%22%3A%22lambda.amazonaws.com%22%7D%2C%22Action%22%3A%22sts%3AAssumeRole%22%7D%5D%7D"
+          },
+          {
+            "Path": "/service-role/",
+            "RoleName": "ci-exec-admin",
+            "RoleId": "RABCDEFGHIJKLMN2",
+            "Arn": "arn:aws:iam::123456789012:role/service-role/ci-exec-admin",
+            "CreateDate": "2025-10-06T14:15:52Z",
+            "AssumeRolePolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Principal%22%3A%7B%22Service%22%3A%22lambda.amazonaws.com%22%7D%2C%22Action%22%3A%22sts%3AAssumeRole%22%7D%5D%7D"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws iam get-role --role-name ci-exec-admin"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Role": {
+          "Path": "/service-role/",
+          "RoleName": "ci-exec-admin",
+          "RoleId": "RABCDEFGHIJKLMN2",
+          "Arn": "arn:aws:iam::123456789012:role/service-role/ci-exec-admin",
+          "CreateDate": "2025-10-06T14:15:52Z",
+          "AssumeRolePolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Principal%22%3A%7B%22Service%22%3A%22lambda.amazonaws.com%22%7D%2C%22Action%22%3A%22sts%3AAssumeRole%22%7D%5D%7D",
+          "Description": "Administrative execution role for CI"
+        }
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws iam list-attached-role-policies --role-name ci-exec-admin"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "AttachedPolicies": [
+          {
+            "PolicyName": "ci-exec-admin-policy",
+            "PolicyArn": "arn:aws:iam::123456789012:policy/ci-exec-admin-policy"
+          }
+        ],
+        "IsTruncated": false
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws iam simulate-principal-policy --policy-source-arn arn:aws:iam::123456789012:user/05-ci-operator --action-names iam:PassRole --resource-arns arn:aws:iam::123456789012:role/service-role/ci-exec-admin"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "EvaluationResults": [
+          {
+            "EvalActionName": "iam:PassRole",
+            "EvalResourceName": "arn:aws:iam::123456789012:role/service-role/ci-exec-admin",
+            "EvalDecision": "allowed"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws iam list-attached-user-policies --user-name 05-ci-operator"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "AttachedPolicies": [
+          {
+            "PolicyName": "ci-ec2-readonly",
+            "PolicyArn": "arn:aws:iam::123456789012:policy/ci-ec2-readonly"
+          }
+        ],
+        "IsTruncated": false
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws iam list-attached-user-policies"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"UserName\""
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws iam list-user-policies --user-name 05-ci-operator"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "PolicyNames": [
+          "InlineCiPassRolePolicy"
+        ],
+        "IsTruncated": false
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws iam get-user-policy --user-name 05-ci-operator --policy-name InlineCiPassRolePolicy"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserName": "05-ci-operator",
+        "PolicyName": "InlineCiPassRolePolicy",
+        "PolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%5B%22sts%3AGetCallerIdentity%22%2C%22iam%3AGetUser%22%2C%22iam%3AListAttachedUserPolicies%22%2C%22iam%3AListUserPolicies%22%2C%22iam%3AGetUserPolicy%22%2C%22iam%3AListRoles%22%2C%22iam%3AGetRole%22%2C%22iam%3AListAttachedRolePolicies%22%2C%22iam%3ASimulatePrincipalPolicy%22%2C%22lambda%3AListFunctions%22%2C%22lambda%3AGetFunctionConfiguration%22%2C%22lambda%3AUpdateFunctionConfiguration%22%2C%22lambda%3AUpdateFunctionCode%22%2C%22lambda%3AInvokeFunction%22%5D%2C%22Resource%22%3A%22%2A%22%7D%2C%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%22iam%3APassRole%22%2C%22Resource%22%3A%22arn%3Aaws%3Aiam%3A%3A123456789012%3Arole/service-role/%2A%22%7D%5D%7D"
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws lambda list-functions"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Functions": [
+          {
+            "FunctionName": "ci-build-step",
+            "Runtime": "python3.11",
+            "Role": "arn:aws:iam::123456789012:role/service-role/ci-build-exec",
+            "Handler": "app.handler",
+            "LastModified": "2025-10-07T08:45:12.345+0000"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws lambda get-function-configuration --function-name ci-build-step"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "FunctionName": "ci-build-step",
+        "Role": "arn:aws:iam::123456789012:role/service-role/ci-build-exec",
+        "Runtime": "python3.11",
+        "LastModified": "2025-10-07T08:45:12.345+0000",
+        "Timeout": 30,
+        "MemorySize": 256
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws lambda update-function-configuration --function-name ci-build-step --role arn:aws:iam::123456789012:role/service-role/ci-exec-admin"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "FunctionName": "ci-build-step",
+        "Role": "arn:aws:iam::123456789012:role/service-role/ci-exec-admin",
+        "Runtime": "python3.11",
+        "LastModified": "2025-10-10T09:12:01.222+0000",
+        "Timeout": 30,
+        "MemorySize": 256
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws lambda update-function-code --function-name ci-build-step --zip-file fileb://payload.zip"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "FunctionName": "ci-build-step",
+        "LastModified": "2025-10-10T09:13:26.908+0000",
+        "RevisionId": "1a2b3c4d5e6f7g8h"
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws lambda invoke --function-name ci-build-step --payload '{\"action\":\"dump_secret\",\"name\":\"training/flag-05\"}' --cli-binary-format raw-in-base64-out /dev/stdout"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "StatusCode": 200,
+        "ExecutedVersion": "$LATEST",
+        "Payload": "{\"flag\":\"FLAG{FLAG-05-PASSROLE-LAMBDA}\"}"
+      }
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws lambda update-function-configuration --function-name ci-build-step --role arn:aws:iam::123456789012:role/other-role"
+    },
+    "response": {
+      "text": "An error occurred (AccessDenied) when calling the UpdateFunctionConfiguration operation: User is not authorized to pass role arn:aws:iam::123456789012:role/other-role"
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws secretsmanager get-secret-value --secret-id training/flag-05"
+    },
+    "response": {
+      "text": "An error occurred (AccessDeniedException) when calling the GetSecretValue operation: User is not authorized to perform: secretsmanager:GetSecretValue on resource training/flag-05"
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "equals": "aws lambda invoke --function-name ci-build-step --payload '{\"action\":\"dump_secret\",\"name\":\"training/flag-05\"}' --qualifier pre-change --cli-binary-format raw-in-base64-out /dev/stdout"
+    },
+    "response": {
+      "text": "An error occurred (AccessDeniedException) when calling the GetSecretValue operation: User: arn:aws:sts::123456789012:assumed-role/ci-build-exec/default is not authorized to perform: secretsmanager:GetSecretValue on resource training/flag-05"
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+lambda\\s+(?!list-functions\\b|get-function-configuration\\b|update-function-configuration\\b|update-function-code\\b|invoke\\b).+"
+    },
+    "response": {
+      "text": "aws lambda: Invalid choice. Valid commands in this lab are list-functions, get-function-configuration, update-function-configuration, update-function-code, invoke."
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+iam\\s+(?!get-user\\b|list-roles\\b|get-role\\b|list-attached-role-policies\\b|simulate-principal-policy\\b|list-attached-user-policies\\b|list-user-policies\\b|get-user-policy\\b).+"
+    },
+    "response": {
+      "text": "aws iam: Invalid choice. Valid operations in this lab are get-user, list-roles, get-role, list-attached-role-policies, simulate-principal-policy, list-attached-user-policies, list-user-policies, get-user-policy."
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+secretsmanager\\s+(?!get-secret-value\\b).+"
+    },
+    "response": {
+      "text": "aws secretsmanager: Invalid choice. Valid command in this lab is get-secret-value."
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+(?!(?:sts|iam|lambda|secretsmanager)\\b).+"
+    },
+    "response": {
+      "text": "aws: error: argument command: Invalid choice, valid choices are: sts, iam, lambda, secretsmanager"
+    }
+  },
+  {
+    "role": "05-ci-operator",
+    "request": {
+      "regex": "^aws\\s+(?:sts|iam|lambda|secretsmanager)\\s+.*--[A-Za-z0-9-]+.*$"
+    },
+    "response": {
+      "text": "Unknown options: --xxxxx"
+    }
+  }
+]

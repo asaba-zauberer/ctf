@@ -1,0 +1,600 @@
+[
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "Use 'aws <service> <operation> --help' to get service-specific help.\nAvailable services in this lab: sts, iam."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+sts\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws sts help\n\nAvailable operations:\n  get-caller-identity    Return details about the IAM caller.\n  assume-role            Request temporary credentials for a target role.\n\nExamples:\n  aws sts get-caller-identity\n  aws sts assume-role --role-arn <arn> --role-session-name training"
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws iam help\n\nAvailable operations:\n  list-users                       List IAM users.\n  list-roles                       List IAM roles.\n  get-user                         Describe an IAM user.\n  list-attached-user-policies      List managed policies attached to a user.\n  list-user-policies               List inline policy names for a user.\n  get-user-policy                  Retrieve a specific inline policy document.\n  get-policy                       Describe a managed policy.\n  list-policy-versions             List versions for a managed policy.\n  get-policy-version               Retrieve a specific policy version.\n\nUse '--help' on any operation for syntax."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+sts\\s+get-caller-identity\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws sts get-caller-identity\nReturn details about the current caller."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+sts\\s+assume-role\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws sts assume-role --role-arn <arn> --role-session-name <name> [--duration-seconds <value>]\nRequest temporary credentials for the specified role."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-user\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam get-user [--user-name <name>]\nDescribe the specified IAM user or the caller when omitted."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-users\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam list-users\nList IAM users in the account."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-roles\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam list-roles\nList IAM roles in the account."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-attached-user-policies\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam list-attached-user-policies --user-name <name>\nList managed policies attached to the user."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-user-policies\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam list-user-policies --user-name <name>\nList inline policy names embedded in the user."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-user-policy\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam get-user-policy --user-name <name> --policy-name <policy>\nRetrieve the specified inline policy document."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-policy\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam get-policy --policy-arn <arn>\nDescribe the specified managed policy."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-policy-versions\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam list-policy-versions --policy-arn <arn>\nList versions for the specified managed policy."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-policy-version\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "usage: aws iam get-policy-version --policy-arn <arn> --version-id <version>\nRetrieve the specified managed policy version."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "equals": "aws sts get-caller-identity"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserId": "AKIA03CTF5L8Q2N7R3D6",
+        "Account": "123456789012",
+        "Arn": "arn:aws:iam::123456789012:user/03-third-party-employee"
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "equals": "aws iam get-user"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "User": {
+          "UserName": "03-third-party-employee",
+          "Arn": "arn:aws:iam::123456789012:user/03-third-party-employee",
+          "CreateDate": "2025-10-06T09:18:45Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "equals": "aws iam get-user --user-name 03-third-party-employee"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "User": {
+          "UserName": "03-third-party-employee",
+          "Arn": "arn:aws:iam::123456789012:user/03-third-party-employee",
+          "CreateDate": "2025-10-06T09:18:45Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "equals": "aws iam list-users"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Users": [
+          {
+            "UserName": "01-developer",
+            "Arn": "arn:aws:iam::123456789012:user/01-developer",
+            "CreateDate": "2025-10-02T08:30:10Z"
+          },
+          {
+            "UserName": "02-ec2-operator",
+            "Arn": "arn:aws:iam::123456789012:user/02-ec2-operator",
+            "CreateDate": "2025-10-04T11:12:05Z"
+          },
+          {
+            "UserName": "03-third-party-employee",
+            "Arn": "arn:aws:iam::123456789012:user/03-third-party-employee",
+            "CreateDate": "2025-10-06T09:18:45Z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-roles\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Roles": [
+          {
+            "RoleName": "03-design-team",
+            "Arn": "arn:aws:iam::123456789012:role/03-design-team",
+            "CreateDate": "2025-10-07T10:05:22Z",
+            "AssumeRolePolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Principal%22%3A%7B%22AWS%22%3A%22arn:aws:iam::123456789012:user/03-third-party-employee%22%7D%2C%22Action%22%3A%22sts%3AAssumeRole%22%7D%5D%7D"
+          },
+          {
+            "RoleName": "03-admin",
+            "Arn": "arn:aws:iam::123456789012:role/03-admin",
+            "CreateDate": "2025-10-08T13:44:10Z",
+            "AssumeRolePolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Principal%22%3A%7B%22AWS%22%3A%22arn:aws:iam::123456789012:role/03-design-team%22%7D%2C%22Action%22%3A%22sts%3AAssumeRole%22%7D%5D%7D"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "equals": "aws iam list-attached-user-policies --user-name 03-third-party-employee"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "AttachedPolicies": [
+          {
+            "PolicyName": "AmazonEC2ReadOnlyAccess",
+            "PolicyArn": "arn:aws:iam::123456789012:policy/AmazonEC2ReadOnlyAccess"
+          }
+        ],
+        "IsTruncated": false
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "equals": "aws iam list-attached-user-policies"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"UserName\""
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "equals": "aws iam list-user-policies --user-name 03-third-party-employee"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "PolicyNames": [
+          "InlineAssumeDesignTeamPolicy"
+        ],
+        "IsTruncated": false
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "equals": "aws iam get-user-policy --user-name 03-third-party-employee --policy-name InlineAssumeDesignTeamPolicy"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserName": "03-third-party-employee",
+        "PolicyName": "InlineAssumeDesignTeamPolicy",
+        "PolicyDocument": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%5B%22sts%3AGetCallerIdentity%22%2C%22iam%3AGetUser%22%2C%22iam%3AListUsers%22%2C%22iam%3AListRoles%22%2C%22iam%3AListAttachedUserPolicies%22%2C%22iam%3AListUserPolicies%22%2C%22iam%3AGetUserPolicy%22%2C%22iam%3AGetPolicy%22%2C%22iam%3AListPolicyVersions%22%2C%22iam%3AGetPolicyVersion%22%5D%2C%22Resource%22%3A%22%2A%22%7D%2C%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%22sts%3AAssumeRole%22%2C%22Resource%22%3A%22arn:aws:iam::123456789012:role/03-design-team%22%7D%5D%7D"
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-policy\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/FlagPolicy\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Policy": {
+          "PolicyName": "FlagPolicy",
+          "PolicyId": "ANPA1234567890",
+          "Arn": "arn:aws:iam::123456789012:policy/FlagPolicy",
+          "Path": "/",
+          "DefaultVersionId": "v2",
+          "AttachmentCount": 1,
+          "CreateDate": "2025-10-08T15:21:04Z",
+          "UpdateDate": "2025-10-12T09:55:18Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-policy\\s*$"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"PolicyArn\""
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-policy-versions\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/FlagPolicy\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Versions": [
+          {
+            "VersionId": "v2",
+            "IsDefaultVersion": true,
+            "CreateDate": "2025-10-12T09:55:18Z"
+          },
+          {
+            "VersionId": "v1",
+            "IsDefaultVersion": false,
+            "CreateDate": "2025-10-05T14:20:33Z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-policy-versions\\s*$"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"PolicyArn\""
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/FlagPolicy\\s+--version-id\\s+v2\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "PolicyVersion": {
+          "VersionId": "v2",
+          "IsDefaultVersion": true,
+          "CreateDate": "2025-10-12T09:55:18Z",
+          "Document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%5B%22iam%3AGetPolicy%22%2C%22iam%3AListPolicyVersions%22%2C%22iam%3AGetPolicyVersion%22%5D%2C%22Resource%22%3A%22arn:aws:iam::123456789012:policy/FlagPolicy%22%7D%5D%7D"
+        }
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/FlagPolicy\\s+--version-id\\s+v1\\s*$"
+    },
+    "response": {
+      "text": "An error occurred (AccessDenied) when calling the GetPolicyVersion operation: User is not authorized to perform: iam:GetPolicyVersion on resource arn:aws:iam::123456789012:policy/FlagPolicy"
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/FlagPolicy\\s*$"
+    },
+    "response": {
+      "text": "Parameter validation failed: Missing required parameter in input: \"VersionId\""
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+sts\\s+assume-role\\s+--role-arn\\s+arn:aws:iam::123456789012:role/03-design-team\\s+--role-session-name\\s+training\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Credentials": {
+          "AccessKeyId": "ASIA03CTF7C3M9P5L2X8",
+          "SecretAccessKey": "ctf03Z9x8C7v6B5n4M3a2S1d0F9g8H7j6K5l4P",
+          "SessionToken": "IQoJb3JpZ2luX2VjEKb//////////wEaDmFwLXNvdXRoZWFzdC0xIhQABCDsignedtokenexample==",
+          "Expiration": "2025-10-10T15:32:00Z"
+        },
+        "AssumedRoleUser": {
+          "AssumedRoleId": "AROAXMPDESIGN:training",
+          "Arn": "arn:aws:sts::123456789012:assumed-role/03-design-team/training"
+        }
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+sts\\s+assume-role\\s+--role-arn\\s+arn:aws:iam::123456789012:role/03-admin\\s+--role-session-name\\s+training\\s*$"
+    },
+    "response": {
+      "text": "An error occurred (AccessDenied) when calling the AssumeRole operation: User is not authorized to perform: sts:AssumeRole on resource arn:aws:iam::123456789012:role/03-admin"
+    }
+  },
+  {
+    "role": "03-design-team",
+    "request": {
+      "equals": "aws sts get-caller-identity --profile 03-design-team"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserId": "AROAXMPDESIGN:training",
+        "Account": "123456789012",
+        "Arn": "arn:aws:sts::123456789012:assumed-role/03-design-team/training"
+      }
+    }
+  },
+  {
+    "role": "03-design-team",
+    "request": {
+      "regex": "^aws\\s+sts\\s+assume-role\\s+--role-arn\\s+arn:aws:iam::123456789012:role/03-admin\\s+--role-session-name\\s+training\\s+--profile\\s+03-design-team\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Credentials": {
+          "AccessKeyId": "ASIA01CTF1V6B3N8K4R7",
+          "SecretAccessKey": "ctf03L1k2J3h4G5f6D7s8A9p0Q1w2E3r4T5y6U7i",
+          "SessionToken": "IQoJb3JpZ2luX2VjEKT//////////wEaDmFwLXNvdXRoZWFzdC0xIhUABCDadminsessiontokenexample==",
+          "Expiration": "2025-10-10T16:05:00Z"
+        },
+        "AssumedRoleUser": {
+          "AssumedRoleId": "AROAXMPADMIN:training",
+          "Arn": "arn:aws:sts::123456789012:assumed-role/03-admin/training"
+        }
+      }
+    }
+  },
+  {
+    "role": "03-design-team",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/FlagPolicy\\s+--version-id\\s+v1\\s+--profile\\s+03-design-team\\s*$"
+    },
+    "response": {
+      "text": "An error occurred (AccessDenied) when calling the GetPolicyVersion operation: User is not authorized to perform: iam:GetPolicyVersion on resource arn:aws:iam::123456789012:policy/FlagPolicy"
+    }
+  },
+  {
+    "role": "03-admin",
+    "request": {
+      "equals": "aws sts get-caller-identity --profile 03-admin"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserId": "AROAXMPADMIN:training",
+        "Account": "123456789012",
+        "Arn": "arn:aws:sts::123456789012:assumed-role/03-admin/training"
+      }
+    }
+  },
+  {
+    "role": "03-admin",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-policy\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/FlagPolicy\\s+--profile\\s+03-admin\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Policy": {
+          "PolicyName": "FlagPolicy",
+          "PolicyId": "ANPA1234567890",
+          "Arn": "arn:aws:iam::123456789012:policy/FlagPolicy",
+          "Path": "/",
+          "DefaultVersionId": "v2",
+          "AttachmentCount": 1,
+          "CreateDate": "2025-10-08T15:21:04Z",
+          "UpdateDate": "2025-10-12T09:55:18Z"
+        }
+      }
+    }
+  },
+  {
+    "role": "03-admin",
+    "request": {
+      "regex": "^aws\\s+iam\\s+list-policy-versions\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/FlagPolicy\\s+--profile\\s+03-admin\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Versions": [
+          {
+            "VersionId": "v2",
+            "IsDefaultVersion": true,
+            "CreateDate": "2025-10-12T09:55:18Z"
+          },
+          {
+            "VersionId": "v1",
+            "IsDefaultVersion": false,
+            "CreateDate": "2025-10-05T14:20:33Z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "role": "03-admin",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/FlagPolicy\\s+--version-id\\s+v2\\s+--profile\\s+03-admin\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "PolicyVersion": {
+          "VersionId": "v2",
+          "IsDefaultVersion": true,
+          "CreateDate": "2025-10-12T09:55:18Z",
+          "Document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%5B%22iam%3AGetPolicy%22%2C%22iam%3AListPolicyVersions%22%2C%22iam%3AGetPolicyVersion%22%5D%2C%22Resource%22%3A%22arn:aws:iam::123456789012:policy/FlagPolicy%22%7D%5D%7D"
+        }
+      }
+    }
+  },
+  {
+    "role": "03-admin",
+    "request": {
+      "regex": "^aws\\s+iam\\s+get-policy-version\\s+--policy-arn\\s+arn:aws:iam::123456789012:policy/FlagPolicy\\s+--version-id\\s+v1\\s+--profile\\s+03-admin\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "PolicyVersion": {
+          "VersionId": "v1",
+          "IsDefaultVersion": false,
+          "CreateDate": "2025-10-05T14:20:33Z",
+          "Document": "%7B%22Version%22%3A%222012-10-17%22%2C%22Statement%22%3A%5B%7B%22Sid%22%3A%22FLAG%7B03-intermediate-FLAG%7D%22%2C%22Effect%22%3A%22Allow%22%2C%22Action%22%3A%22iam%3AGetPolicyVersion%22%2C%22Resource%22%3A%22arn:aws:iam::123456789012:policy/FlagPolicy%22%7D%5D%7D"
+        }
+      }
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+iam\\s+(?!get-user\\b|list-users\\b|list-roles\\b|list-attached-user-policies\\b|list-user-policies\\b|get-user-policy\\b|get-policy\\b|list-policy-versions\\b|get-policy-version\\b).+"
+    },
+    "response": {
+      "text": "aws iam: Invalid choice. Valid operations in this lab are get-user, list-users, list-roles, list-attached-user-policies, list-user-policies, get-user-policy, get-policy, list-policy-versions, get-policy-version."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+sts\\s+(?!get-caller-identity\\b|assume-role\\b).+"
+    },
+    "response": {
+      "text": "aws sts: Invalid choice. Available operations are get-caller-identity, assume-role."
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+(?!(?:sts|iam)\\b).+"
+    },
+    "response": {
+      "text": "aws: error: argument command: Invalid choice, valid choices are: sts, iam"
+    }
+  },
+  {
+    "role": "03-third-party-employee",
+    "request": {
+      "regex": "^aws\\s+(?:iam|sts)\\s+.*--[A-Za-z0-9-]+.*$"
+    },
+    "response": {
+      "text": "Unknown options: --xxxxx"
+    }
+  },
+  {
+    "role": "03-design-team",
+    "request": {
+      "regex": "^aws\\s+(?:iam|sts)\\s+.*--[A-Za-z0-9-]+.*--profile\\s+03-design-team.*$"
+    },
+    "response": {
+      "text": "Unknown options: --xxxxx"
+    }
+  },
+  {
+    "role": "03-admin",
+    "request": {
+      "regex": "^aws\\s+(?:iam|sts)\\s+.*--[A-Za-z0-9-]+.*--profile\\s+03-admin.*$"
+    },
+    "response": {
+      "text": "Unknown options: --xxxxx"
+    }
+  }
+]
