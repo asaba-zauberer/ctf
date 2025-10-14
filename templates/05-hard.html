@@ -1,0 +1,43 @@
+<!-- templates/05-hard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>05 — Leaky Repo (Download)</title>
+</head>
+<body>
+  <header>
+    <h1>05 — Leaky Repo (Download)</h1>
+    <p>This repository is provided for local inspection. Retrieve a copy, review it in your own environment, and explore the history at your pace.</p>
+  </header>
+
+  <section>
+    <h2>Downloads</h2>
+    <ul>
+      <li><a href="/05-hard/download?file=leaky-repo.tar.gz">leaky-repo.tar.gz</a> — compressed archive</li>
+      <li><a href="/05-hard/download?file=leaky-repo.bundle">leaky-repo.bundle</a> — Git bundle snapshot</li>
+      <li><a href="/05-hard/download?file=README.md">README.md</a> — distribution notes</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>How to use (locally)</h2>
+    <pre><code># Option A: tarball
+tar -xzf leaky-repo.tar.gz
+cd leaky-repo
+
+# Option B: git bundle
+git clone leaky-repo.bundle leaky-repo
+cd leaky-repo
+
+# Inspect the history
+git log --oneline
+git log -p
+</code></pre>
+  </section>
+
+  <footer>
+    <p>All materials are for training purposes only; the project does not contact live services.</p>
+  </footer>
+</body>
+</html>

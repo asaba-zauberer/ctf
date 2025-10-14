@@ -1,0 +1,55 @@
+<!-- templates/06-hard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>06-hard Search</title>
+</head>
+<body>
+  <h1>Internal Knowledge Search (beta)</h1>
+  <form id="search-form" method="post">
+    <input id="query" name="query" type="text"
+           placeholder="e.g. http://169.254.170.2/v2/credentials"
+           style="width:70%;" required />
+    <button type="submit">Search</button>
+  </form>
+  <pre id="result" aria-live="polite" style="margin-top:1rem;"></pre>
+
+  <script>
+    const form = document.getElementById('search-form');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      result.textContent = 'Searching...';
+
+      // Build x-www-form-urlencoded body
+      const params = new URLSearchParams();
+      for (const [k, v] of new FormData(form).entries()) {
+        params.append(k, v);
+      }
+
+      try {
+        const res = await fetch('/06-hard/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString()
+        });
+
+        const data = await res.json();
+        if (data.message) {
+          result.textContent = data.message;
+        } else if (data.data) {
+          result.textContent = JSON.stringify(data.data, null, 2);
+        } else if (data.error) {
+          result.textContent = `Error: ${data.error}`;
+        } else {
+          result.textContent = 'No content';
+        }
+      } catch (err) {
+        result.textContent = 'Request failed';
+      }
+    });
+  </script>
+</body>
+</html>

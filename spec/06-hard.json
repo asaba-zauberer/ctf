@@ -1,0 +1,207 @@
+[
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "Use 'aws <service> <operation> --help' to get service-specific help.\nAvailable services in this lab: sts, iam, dynamodb."
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+dynamodb\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws dynamodb help\n\nAvailable commands:\n  list-tables                         List DynamoDB tables.\n  describe-table --table-name <name>  Show metadata for a table.\n  scan --table-name <name>            Read items across a table.\n  get-item --table-name <name> --key <JSON>  Retrieve a single item.\n\nExamples:\n  aws dynamodb list-tables\n  aws dynamodb describe-table --table-name training-flags\n  aws dynamodb scan --table-name training-flags --max-items 5\n  aws dynamodb get-item --table-name training-flags --key \"{\\\"flag_type\\\":{\\\"S\\\":\\\"final\\\"},\\\"name\\\":{\\\"S\\\":\\\"challenge-06\\\"}}\""
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+iam\\s+--help\\s*$"
+    },
+    "response": {
+      "text": "aws iam help\n\nAvailable operations:\n  get-user    Describe an IAM user (requires long-term user credentials).\n\nNote: This session uses assumed-role credentials, so calling get-user without --user-name results in AccessDenied."
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "equals": "aws sts get-caller-identity"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "UserId": "AROA06CTFEXAMPLEID:task-06",
+        "Account": "123456789012",
+        "Arn": "arn:aws:sts::123456789012:assumed-role/06-web-frontend-task-role/task-06"
+      }
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "equals": "aws iam get-user"
+    },
+    "response": {
+      "text": "An error occurred (AccessDenied) when calling the GetUser operation: Must specify user name when using assumed-role credentials."
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "equals": "aws iam get-user --user-name 06-web-frontend-task-role"
+    },
+    "response": {
+      "text": "An error occurred (NoSuchEntity) when calling the GetUser operation: The user with name 06-web-frontend-task-role cannot be found."
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+dynamodb\\s+list-tables\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "TableNames": [
+          "training-flags",
+          "unrelated-metrics"
+        ]
+      }
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+dynamodb\\s+describe-table\\s+--table-name\\s+training-flags\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Table": {
+          "TableName": "training-flags",
+          "TableArn": "arn:aws:dynamodb:us-east-1:123456789012:table/training-flags",
+          "TableStatus": "ACTIVE",
+          "CreationDateTime": "2025-10-08T13:05:44Z",
+          "ItemCount": 1,
+          "KeySchema": [
+            {
+              "AttributeName": "flag_type",
+              "KeyType": "HASH"
+            },
+            {
+              "AttributeName": "name",
+              "KeyType": "RANGE"
+            }
+          ],
+          "ProvisionedThroughput": {
+            "ReadCapacityUnits": 5,
+            "WriteCapacityUnits": 5
+          }
+        }
+      }
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+dynamodb\\s+scan\\s+--table-name\\s+training-flags\\s*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Items": [
+          {
+            "flag_type": {
+              "S": "final"
+            },
+            "name": {
+              "S": "challenge-06"
+            },
+            "flag": {
+              "S": "FLAG{FLAG-06-DDB-SSRF}"
+            },
+            "updated_at": {
+              "S": "2025-10-10T11:22:33Z"
+            }
+          }
+        ],
+        "Count": 1,
+        "ScannedCount": 1
+      }
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+dynamodb\\s+get-item\\s+--table-name\\s+training-flags\\s+--key\\s+.*$"
+    },
+    "response": {
+      "render": "json",
+      "json": {
+        "Item": {
+          "flag_type": {
+            "S": "final"
+          },
+          "name": {
+            "S": "challenge-06"
+          },
+          "flag": {
+            "S": "FLAG{FLAG-06-DDB-SSRF}"
+          },
+          "updated_at": {
+            "S": "2025-10-10T11:22:33Z"
+          }
+        }
+      }
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+dynamodb\\s+put-item\\b.*$"
+    },
+    "response": {
+      "text": "An error occurred (AccessDeniedException) when calling the PutItem operation: User is not authorized to perform: dynamodb:PutItem on resource arn:aws:dynamodb:us-east-1:123456789012:table/training-flags"
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+dynamodb\\s+describe-table\\s+--table-name\\s+no_such_table\\s*$"
+    },
+    "response": {
+      "text": "An error occurred (ResourceNotFoundException) when calling the DescribeTable operation: Requested resource not found: Table: no_such_table not found"
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+dynamodb\\s+(?!list-tables\\b|describe-table\\b|scan\\b|get-item\\b).+"
+    },
+    "response": {
+      "text": "aws dynamodb: Invalid choice. Valid commands in this lab are list-tables, describe-table, scan, get-item."
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+(?!(?:sts|iam|dynamodb)\\b).+"
+    },
+    "response": {
+      "text": "aws: error: argument command: Invalid choice, valid choices are: sts, iam, dynamodb"
+    }
+  },
+  {
+    "role": "06-web-frontend-task-role",
+    "request": {
+      "regex": "^aws\\s+(?:sts|iam|dynamodb)\\s+.*--xxxxx.*$"
+    },
+    "response": {
+      "text": "Unknown options: --xxxxx"
+    }
+  }
+]

@@ -1,0 +1,26 @@
+<!-- templates/01-easy.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>01 — Getting Started: AWS CLI v2 Simulator</title>
+</head>
+<body>
+  <h1>01 — Getting Started: AWS CLI v2 Simulator</h1>
+  <p>Welcome to the challenge! Use the AWS CLI v2 simulator to explore and solve each task. The simulator itself is not an attack target—treat it as training infrastructure.</p>
+  <ul>
+    <li>Discover credentials during the challenge and register them in your local AWS CLI configuration.</li>
+    <li>Use the following commands to record any access key pair you obtain:</li>
+  </ul>
+  <pre><code>aws configure set aws_access_key_id &lt;ACCESS_KEY&gt;
+aws configure set aws_secret_access_key &lt;SECRET_KEY&gt;</code></pre>
+  <ul>
+    <li>Only a focused subset of AWS commands is implemented. Check availability with the built-in help system:</li>
+  </ul>
+  <pre><code>aws &lt;service&gt; --help</code></pre>
+  <ul>
+    <li>Begin by reviewing IAM information and understanding your effective permissions:</li>
+  </ul>
+  <pre><code>aws iam --help</code></pre>
+</body>
+</html>
